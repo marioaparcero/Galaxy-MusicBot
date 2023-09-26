@@ -6,9 +6,9 @@ const command = new SlashCommand()
 	.setNameLocalizations({
 		'es-ES': 'aleatorio',
 	})
-	.setDescription("La cola se establece de forma aleatoria")
+	.setDescription("Randomizes the queue")
 	.setDescriptionLocalizations({
-		'es-ES': 'Evita que el bot se desconecte de un VC (alternar)',
+		'es-ES': 'La cola se establece de forma aleatoria',
   	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);

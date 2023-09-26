@@ -62,10 +62,10 @@ const command = new SlashCommand()
             var title = title.replace(/\[/g,"")
 			const queueEmbed = new MessageEmbed()
 				.setColor(client.config.embedColor)
-				.setDescription(`**♪ | Now playing:** [${ title }](${ song.uri })`)
+				.setDescription(`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri })`)
 				.addFields(
 					{
-						name: "Duration",
+						name: "Duración",
 						value: song.isStream
 							? `\`LIVE\``
 							: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
@@ -75,12 +75,12 @@ const command = new SlashCommand()
 						inline: true,
 					},
 					{
-						name: "Volume",
+						name: "Volumen",
 						value: `\`${ player.volume }\``,
 						inline: true,
 					},
 					{
-						name: "Total Tracks",
+						name: "Total de pistas",
 						value: `\`${ player.queue.totalSize - 1 }\``,
 						colonNotation: true,
 						inline: true,
@@ -129,11 +129,11 @@ const command = new SlashCommand()
 				const embedTwo = new MessageEmbed()
 					.setColor(client.config.embedColor)
 					.setDescription(
-						`**♪ | Now playing:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Queued Tracks**\n${ pages[page] }`,
+						`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
 					)
 					.addFields(
 						{
-							name: "Track Duration",
+							name: "Duración de la pista",
 							value: song.isStream
 								? `\`LIVE\``
 								: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
@@ -143,21 +143,21 @@ const command = new SlashCommand()
 							inline: true,
 						},
 						{
-							name: "Total Tracks Duration",
+							name: "Duración total de las pistas",
 							value: `\`${ pms(queueDuration, {
 								colonNotation: true,
 							}) }\``,
 							inline: true,
 						},
 						{
-							name: "Total Tracks",
+							name: "Total de pistas",
 							value: `\`${ player.queue.totalSize - 1 }\``,
 							colonNotation: true,
 							inline: true,
 						},
 					)
 					.setFooter({
-						text: `Page ${ page + 1 }/${ pages.length }`,
+						text: `Página ${ page + 1 }/${ pages.length }`,
 					});
 				
 				await interaction
@@ -174,11 +174,11 @@ const command = new SlashCommand()
 				const embedThree = new MessageEmbed()
 					.setColor(client.config.embedColor)
 					.setDescription(
-						`**♪ | Now playing:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Queued Tracks**\n${ pages[page] }`,
+						`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
 					)
 					.addFields(
 						{
-							name: "Track Duration",
+							name: "Duración de la pista",
 							value: song.isStream
 								? `\`LIVE\``
 								: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
@@ -188,21 +188,21 @@ const command = new SlashCommand()
 							inline: true,
 						},
 						{
-							name: "Total Tracks Duration",
+							name: "Duración total de las pistas",
 							value: `\`${ pms(queueDuration, {
 								colonNotation: true,
 							}) }\``,
 							inline: true,
 						},
 						{
-							name: "Total Tracks",
+							name: "Total de pistas",
 							value: `\`${ player.queue.totalSize - 1 }\``,
 							colonNotation: true,
 							inline: true,
 						},
 					)
 					.setFooter({
-						text: `Page ${ page + 1 }/${ pages.length }`,
+						text: `Página ${ page + 1 }/${ pages.length }`,
 					});
 				
 				const buttonOne = new MessageButton()
@@ -231,7 +231,7 @@ const command = new SlashCommand()
 						} else {
 							return b
 								.reply({
-									content: `Only **${ interaction.user.tag }** can use this button.`,
+									content: `Solo **${ interaction.user.tag }** puede usar este botón.`,
 									ephemeral: true,
 								})
 								.catch(() => {
@@ -254,11 +254,11 @@ const command = new SlashCommand()
 						const embedFour = new MessageEmbed()
 							.setColor(client.config.embedColor)
 							.setDescription(
-								`**♪ | Now playing:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Queued Tracks**\n${ pages[page] }`,
+								`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
 							)
 							.addFields(
 								{
-									name: "Track Duration",
+									name: "Duración de la pista",
 									value: song.isStream
 										? `\`LIVE\``
 										: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
@@ -268,21 +268,21 @@ const command = new SlashCommand()
 									inline: true,
 								},
 								{
-									name: "Total Tracks Duration",
+									name: "Duración total de las pistas",
 									value: `\`${ pms(queueDuration, {
 										colonNotation: true,
 									}) }\``,
 									inline: true,
 								},
 								{
-									name: "Total Tracks",
+									name: "Total de pistas",
 									value: `\`${ player.queue.totalSize - 1 }\``,
 									colonNotation: true,
 									inline: true,
 								},
 							)
 							.setFooter({
-								text: `Page ${ page + 1 }/${ pages.length }`,
+								text: `Página ${ page + 1 }/${ pages.length }`,
 							});
 						
 						await interaction.editReply({
@@ -302,11 +302,11 @@ const command = new SlashCommand()
 						const embedFive = new MessageEmbed()
 							.setColor(client.config.embedColor)
 							.setDescription(
-								`**♪ | Now playing:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Queued Tracks**\n${ pages[page] }`,
+								`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
 							)
 							.addFields(
 								{
-									name: "Track Duration",
+									name: "Duración de la pista",
 									value: song.isStream
 										? `\`LIVE\``
 										: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
@@ -316,21 +316,21 @@ const command = new SlashCommand()
 									inline: true,
 								},
 								{
-									name: "Total Tracks Duration",
+									name: "Duración total de las pistas",
 									value: `\`${ pms(queueDuration, {
 										colonNotation: true,
 									}) }\``,
 									inline: true,
 								},
 								{
-									name: "Total Tracks",
+									name: "Total de pistas",
 									value: `\`${ player.queue.totalSize - 1 }\``,
 									colonNotation: true,
 									inline: true,
 								},
 							)
 							.setFooter({
-								text: `Page ${ page + 1 }/${ pages.length }`,
+								text: `Página ${ page + 1 }/${ pages.length }`,
 							});
 						
 						await interaction

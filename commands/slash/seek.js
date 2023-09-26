@@ -44,7 +44,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There is no music playing."),
+						.setDescription("No hay música reproduciéndose."),
 				],
 				ephemeral: true,
 			});
@@ -69,7 +69,7 @@ const command = new SlashCommand()
 					new MessageEmbed()
 						.setColor(client.config.embedColor)
 						.setDescription(
-							`⏩ | **${ player.queue.current.title }** has been ${
+							`⏩ | **${ player.queue.current.title }** ha sido ${
 								time < position? "rewound" : "seeked"
 							} to **${ ms(time) }**`,
 						),
@@ -81,7 +81,7 @@ const command = new SlashCommand()
 					new MessageEmbed()
 						.setColor(client.config.embedColor)
 						.setDescription(
-							`Unable to seek current playing track. This may be due to exceeding track duration or an incorrect time format. Please check and try again`,
+							`No se puede buscar la pista que se está reproduciendo actualmente. Esto puede deberse a que se ha excedido la duración de la pista o a un formato de hora incorrecto. Por favor revisa e intenta de nuevo`,
 						),
 				],
 			});

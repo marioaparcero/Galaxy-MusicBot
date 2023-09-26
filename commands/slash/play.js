@@ -4,9 +4,9 @@ const escapeMarkdown = require("discord.js").Util.escapeMarkdown;
 
 const command = new SlashCommand()
   .setName("play")
-  // .setNameLocalizations({
-	// 	'es-ES': '',
-	// })
+  .setNameLocalizations({
+		'es-ES': 'play',
+	})
   .setDescription(
     "Searches and plays the requested song \nSupports: \nYoutube, Spotify, Deezer, Apple Music"
   )

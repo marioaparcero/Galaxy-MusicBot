@@ -6,9 +6,9 @@ const command = new SlashCommand()
 	.setNameLocalizations({
 		'es-ES': 'filtros',
 	})
-	.setDescription("add or remove filters")
+	.setDescription("Add or remove filters")
 	.setDescriptionLocalizations({
-		'es-ES': 'agregar o quitar filtros',
+		'es-ES': 'Agregar o quitar filtros',
   	})
 	.addStringOption((option) =>
 		option
