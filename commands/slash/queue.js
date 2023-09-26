@@ -6,7 +6,13 @@ const pms = require("pretty-ms");
 
 const command = new SlashCommand()
 	.setName("queue")
+	.setNameLocalizations({
+		'es-ES': 'cola',
+	})
 	.setDescription("Shows the current queue")
+	.setDescriptionLocalizations({
+		'es-ES': 'Muestra la cola actual',
+  	})
 	
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
@@ -22,7 +28,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -41,7 +47,7 @@ const command = new SlashCommand()
 		if (!player.playing) {
 			const queueEmbed = new MessageEmbed()
 				.setColor(client.config.embedColor)
-				.setDescription("There's nothing playing.");
+				.setDescription("No hay nada reproduciendo.");
 			return interaction.reply({ embeds: [queueEmbed], ephemeral: true });
 		}
 		

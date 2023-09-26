@@ -5,7 +5,13 @@ const prettyMilliseconds = require("pretty-ms");
 
 const command = new SlashCommand()
 	.setName("nowplaying")
+	.setNameLocalizations({
+		'es-ES': 'mostrarcanción',
+	})
 	.setDescription("Shows the song currently playing in the voice channel.")
+	.setDescriptionLocalizations({
+		'es-ES': 'Muestra la canción que se reproduce actualmente en el canal de voz.',
+  	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -20,7 +26,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -30,7 +36,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("The bot isn't in a channel."),
+						.setDescription("El bot no está en un canal."),
 				],
 				ephemeral: true,
 			});
@@ -41,7 +47,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There's nothing playing."),
+						.setDescription("No hay nada reproduciendo."),
 				],
 				ephemeral: true,
 			});
@@ -53,17 +59,17 @@ const command = new SlashCommand()
         var title = title.replace(/\[/g,"")
 		const embed = new MessageEmbed()
 			.setColor(client.config.embedColor)
-			.setAuthor({ name: "Now Playing", iconURL: client.config.iconURL })
+			.setAuthor({ name: "Reproduciendo ahora ♪", iconURL: client.config.iconURL }) //Ahora suena ♪
 			// show who requested the song via setField, also show the duration of the song
 			.setFields([
 				{
-					name: "Requested by",
+					name: "Solicitado por",
 					value: `<@${ song.requester.id }>`,
 					inline: true,
 				},
 				// show duration, if live show live
 				{
-					name: "Duration",
+					name: "Duración",
 					value: song.isStream
 						? `\`LIVE\``
 						: `\`${ prettyMilliseconds(player.position, {

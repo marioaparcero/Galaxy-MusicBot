@@ -3,7 +3,13 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("shuffle")
-	.setDescription("Randomizes the queue")
+	.setNameLocalizations({
+		'es-ES': 'aleatorio',
+	})
+	.setDescription("La cola se establece de forma aleatoria")
+	.setDescriptionLocalizations({
+		'es-ES': 'Evita que el bot se desconecte de un VC (alternar)',
+  	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -18,7 +24,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -28,7 +34,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There is no music playing."),
+						.setDescription("No se reproduce música."),
 				],
 				ephemeral: true,
 			});
@@ -39,7 +45,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There are not enough songs in the queue."),
+						.setDescription("No hay suficientes canciones en la cola."),
 				],
 				ephemeral: true,
 			});
@@ -51,7 +57,7 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription("🔀 | **Successfully shuffled the queue.**"),
+					.setDescription("🔀 | **Se ha mezclado la cola con éxito.**"),
 			],
 		});
 	});

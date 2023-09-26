@@ -3,7 +3,13 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("replay")
+	.setNameLocalizations({
+		'es-ES': 'reproducir',
+	})
 	.setDescription("Replay current playing track")
+	.setDescriptionLocalizations({
+		'es-ES': 'Reproducir la pista en reproducción actual',
+  	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -18,7 +24,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}

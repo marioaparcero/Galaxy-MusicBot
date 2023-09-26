@@ -5,7 +5,13 @@ const path = require("path");
 
 const command = new SlashCommand()
 	.setName("reload")
+	.setNameLocalizations({
+		'es-ES': 'recargar',
+	})
 	.setDescription("Reload all commands")
+	.setDescriptionLocalizations({
+		'es-ES': 'Recargar todos los comandos',
+  	})
 	.setRun(async (client, interaction, options) => {
 		if (interaction.user.id === client.config.adminId) {
 			try {
@@ -18,9 +24,9 @@ const command = new SlashCommand()
 						let cmd = require(ContextCommandsDirectory + "/" + file);
 						if (!cmd.command || !cmd.run) {
 							return this.warn(
-								"❌ Unable to load Command: " +
+								"❌ No se puede cargar el comando: " +
 								file.split(".")[0] +
-								", File doesn't have either command/run",
+								", El archivo no tiene comando/ejecutar",
 							);
 						}
 						client.contextCommands.set(file.split(".")[0].toLowerCase(), cmd);
@@ -37,9 +43,9 @@ const command = new SlashCommand()
 						
 						if (!cmd || !cmd.run) {
 							return client.warn(
-								"❌ Unable to load Command: " +
+								"❌ No se puede cargar el comando: " +
 								file.split(".")[0] +
-								", File doesn't have a valid command with run function",
+								", El archivo no tiene un comando válido con la función de ejecución",
 							);
 						}
 						client.slashCommands.set(file.split(".")[0].toLowerCase(), cmd);
@@ -48,14 +54,14 @@ const command = new SlashCommand()
 				
 				const totalCmds =
 					client.slashCommands.size + client.contextCommands.size;
-				client.log(`Reloaded ${ totalCmds } commands!`);
+				client.log(`¡${ totalCmds } comandos recargados!`);
 				return interaction.reply({
 					embeds: [
 						new MessageEmbed()
 							.setColor(client.config.embedColor)
-							.setDescription(`Sucessfully Reloaded \`${ totalCmds }\` Commands!`)
+							.setDescription(`¡\`${ totalCmds }\` comandos recargados con éxito!`)
 							.setFooter({
-								text: `${ client.user.username } was reloaded by ${ interaction.user.username }`,
+								text: `${ client.user.username } ha sido recargado por ${ interaction.user.username }`,
 							})
 							.setTimestamp(),
 					],
@@ -68,7 +74,7 @@ const command = new SlashCommand()
 						new MessageEmbed()
 							.setColor(client.config.embedColor)
 							.setDescription(
-								"An error has occured. For more details please check console.",
+								"Ha ocurrido un error. Para obtener más detalles, consulte la consola.",
 							),
 					],
 					ephemeral: true,
@@ -79,7 +85,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setDescription("You are not authorized to use this command!"),
+						.setDescription("¡No estás autorizado a utilizar este comando!"),
 				],
 				ephemeral: true,
 			});

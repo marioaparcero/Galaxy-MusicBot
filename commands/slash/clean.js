@@ -2,11 +2,20 @@ const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
 	.setName("clean")
+	.setNameLocalizations({
+		'es-ES': 'limpiar',
+	})
 	.setDescription("Cleans the last 100 bot messages from channel.")
+	.setDescriptionLocalizations({
+		'es-ES': 'Limpia los últimos 100 mensajes de bot del canal.',
+	})
 	.addIntegerOption((option) =>
 		option
 			.setName("number")
 			.setDescription("Number of messages to delete.")
+			.setDescriptionLocalizations({
+				'es-ES': 'Número de mensajes a eliminar.',
+			})
 			.setMinValue(2).setMaxValue(100)
 			.setRequired(false),
 	)

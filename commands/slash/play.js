@@ -4,13 +4,25 @@ const escapeMarkdown = require("discord.js").Util.escapeMarkdown;
 
 const command = new SlashCommand()
   .setName("play")
+  // .setNameLocalizations({
+	// 	'es-ES': '',
+	// })
   .setDescription(
     "Searches and plays the requested song \nSupports: \nYoutube, Spotify, Deezer, Apple Music"
   )
+  .setDescriptionLocalizations({
+		'es-ES': 'Busca y reproduce la canción solicitada \nSoporta: \nYoutube, Spotify, Deezer, Apple Music',
+  })
   .addStringOption((option) =>
     option
       .setName("query")
+      .setNameLocalizations({
+        'es-ES': 'canción',
+      })
       .setDescription("What am I looking for?")
+      .setDescriptionLocalizations({
+        'es-ES': '¿Qué estoy buscando?',
+      })
       .setAutocomplete(true)
       .setRequired(true)
   )
@@ -23,7 +35,7 @@ const command = new SlashCommand()
     let node = await client.getLavalink(client);
     if (!node) {
       return interaction.reply({
-        embeds: [client.ErrorEmbed("Lavalink node is not connected")],
+        embeds: [client.ErrorEmbed("El nodo Lavalink no está conectado")],
       });
     }
 
@@ -49,13 +61,13 @@ const command = new SlashCommand()
       embeds: [
         new MessageEmbed()
           .setColor(client.config.embedColor)
-          .setDescription(":mag_right: **Searching...**"),
+          .setDescription(":mag_right: **Buscando...**"),
       ],
       fetchReply: true,
     });
 
     let query = options.getString("query", true);
-    let res = await player.search(query, interaction.user).catch((err) => {
+    let res = await player.search(query, interaction.user).catch((err) => { //`:musical_note: ${query}`
       client.error(err);
       return {
         loadType: "LOAD_FAILED",
@@ -71,7 +83,7 @@ const command = new SlashCommand()
           embeds: [
             new MessageEmbed()
               .setColor("RED")
-              .setDescription("There was an error while searching"),
+              .setDescription("Hubo un error al buscar"),
           ],
         })
         .catch(this.warn);
@@ -86,7 +98,7 @@ const command = new SlashCommand()
           embeds: [
             new MessageEmbed()
               .setColor("RED")
-              .setDescription("No results were found"),
+              .setDescription("No se encontraron resultados"),
           ],
         })
         .catch(this.warn);
@@ -103,17 +115,17 @@ const command = new SlashCommand()
       var title = title.replace(/\[/g, "");
       let addQueueEmbed = new MessageEmbed()
         .setColor(client.config.embedColor)
-        .setAuthor({ name: "Added to queue", iconURL: client.config.iconURL })
-        .setDescription(`[${title}](${res.tracks[0].uri})` || "No Title")
+        .setAuthor({ name: "Agregado a la cola", iconURL: client.config.iconURL })
+        .setDescription(`[${title}](${res.tracks[0].uri})` || "Sin título")
         .setURL(res.tracks[0].uri)
         .addFields(
           {
-            name: "Added by",
+            name: "Añadido por",
             value: `<@${interaction.user.id}>`,
             inline: true,
           },
           {
-            name: "Duration",
+            name: "Duración",
             value: res.tracks[0].isStream
               ? `\`LIVE 🔴 \``
               : `\`${client.ms(res.tracks[0].duration, {
@@ -134,7 +146,7 @@ const command = new SlashCommand()
 
       if (player.queue.totalSize > 1) {
         addQueueEmbed.addFields({
-          name: "Position in queue",
+          name: "Posición en cola",
           value: `${player.queue.size}`,
           inline: true,
         });
@@ -159,19 +171,19 @@ const command = new SlashCommand()
       let playlistEmbed = new MessageEmbed()
         .setColor(client.config.embedColor)
         .setAuthor({
-          name: "Playlist added to queue",
+          name: "Lista de reproducción agregada a la cola",
           iconURL: client.config.iconURL,
         })
         .setThumbnail(res.tracks[0].thumbnail)
         .setDescription(`[${res.playlist.name}](${query})`)
         .addFields(
           {
-            name: "Enqueued",
-            value: `\`${res.tracks.length}\` songs`,
+            name: "En cola",
+            value: `\`${res.tracks.length}\` canciones`,
             inline: true,
           },
           {
-            name: "Playlist duration",
+            name: "Duración de la lista de reproducción",
             value: `\`${client.ms(res.playlist.duration, {
               colonNotation: true,
               secondsDecimalDigits: 0,

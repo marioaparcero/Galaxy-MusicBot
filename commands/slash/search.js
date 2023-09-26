@@ -8,11 +8,20 @@ const {
 
 const command = new SlashCommand()
   .setName("search")
+  .setNameLocalizations({
+		'es-ES': 'buscar',
+	})
   .setDescription("Search for a song")
+  .setDescriptionLocalizations({
+		'es-ES': 'Buscar una canción',
+  })
   .addStringOption((option) =>
     option
       .setName("query")
       .setDescription("The song to search for")
+      .setDescriptionLocalizations({
+        'es-ES': 'La canción para buscar',
+      })
       .setRequired(true)
   )
   .setRun(async (client, interaction, options) => {
@@ -29,7 +38,7 @@ const command = new SlashCommand()
         embeds: [
           new MessageEmbed()
             .setColor("RED")
-            .setDescription("Lavalink node is not connected"),
+            .setDescription("El nodo Lavalink no está conectado"),
         ],
       });
     }
@@ -48,7 +57,7 @@ const command = new SlashCommand()
         return interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setDescription("An error occured while searching for the song")
+              .setDescription("Se produjo un error al buscar la canción.")
               .setColor("RED"),
           ],
           ephemeral: true,
@@ -59,7 +68,7 @@ const command = new SlashCommand()
         embeds: [
           new MessageEmbed()
             .setAuthor({
-              name: "An error occured while searching for the song",
+              name: "Se produjo un error al buscar la canción.",
             })
             .setColor("RED"),
         ],
@@ -71,7 +80,7 @@ const command = new SlashCommand()
       return interaction.reply({
         embeds: [
           new MessageEmbed()
-            .setDescription(`No results found for \`${search}\``)
+            .setDescription(`No se encontraron resultados para \`${search}\``)
             .setColor("RED"),
         ],
         ephemeral: true,
@@ -99,7 +108,7 @@ const command = new SlashCommand()
       const menus = new MessageActionRow().addComponents(
         new MessageSelectMenu()
           .setCustomId("select")
-          .setPlaceholder("Select a song")
+          .setPlaceholder("Selecciona una canción")
           .addOptions(resultFromSearch)
       );
 
@@ -108,7 +117,7 @@ const command = new SlashCommand()
           new MessageEmbed()
             .setColor(client.config.embedColor)
             .setDescription(
-              `Here are some of the results I found for \`${search}\`. Please select track within \`30 seconds\``
+              `Éstos son algunos de los resultados que encontré para \`${search}\`. Seleccione la pista dentro de \`30 segundos\``
             ),
         ],
         components: [menus],
@@ -138,23 +147,23 @@ const command = new SlashCommand()
             embeds: [
               new MessageEmbed()
                 .setAuthor({
-                  name: "Added to queue",
+                  name: "Agregado a la cola",
                   iconURL: client.config.iconURL,
                 })
                 .setURL(res.tracks[0].uri)
                 .setThumbnail(res.tracks[0].displayThumbnail("maxresdefault"))
                 .setDescription(
                   `[${trackForPlay?.tracks[0]?.title}](${trackForPlay?.tracks[0].uri})` ||
-                    "No Title"
+                    "Sin título"
                 )
                 .addFields(
                   {
-                    name: "Added by",
+                    name: "Añadido por",
                     value: `<@${interaction.user.id}>`,
                     inline: true,
                   },
                   {
-                    name: "Duration",
+                    name: "Duración",
                     value: res.tracks[0].isStream
                       ? `\`LIVE :red_circle:\``
                       : `\`${client.ms(res.tracks[0].duration, {
@@ -176,7 +185,7 @@ const command = new SlashCommand()
             embeds: [
               new MessageEmbed()
                 .setDescription(
-                  `No track selected. You took too long to select a track.`
+                  `Ninguna pista seleccionada. Tardaste demasiado en seleccionar una pista.`
                 )
                 .setColor(client.config.embedColor),
             ],

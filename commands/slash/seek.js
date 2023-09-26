@@ -4,11 +4,20 @@ const ms = require("ms");
 
 const command = new SlashCommand()
 	.setName("seek")
+	.setNameLocalizations({
+		'es-ES': 'avanzar',
+	})
 	.setDescription("Seek to a specific time in the current song.")
+	.setDescriptionLocalizations({
+		'es-ES': 'Busque un momento específico en la canción actual.',
+  	})
 	.addStringOption((option) =>
 		option
 			.setName("time")
-			.setDescription("Seek to time you want. Ex 1h 30m | 2h | 80m | 53s")
+			.setDescription("Seek to time you want. Ex 1h 30m | 2h | 100m | 50s")
+			.setDescriptionLocalizations({
+				'es-ES': 'Busca el momento que quieras. Ejemplo 1h 30m | 2h | 100m | 50s',
+		  	})
 			.setRequired(true),
 	)
 	.setRun(async (client, interaction, options) => {
@@ -25,7 +34,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}

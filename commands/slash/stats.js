@@ -6,7 +6,13 @@ const os = require("os");
 
 const command = new SlashCommand()
 	.setName("stats")
+	.setNameLocalizations({
+		'es-ES': 'estadísticas',
+	})
 	.setDescription("Get information about the bot")
+	.setDescriptionLocalizations({
+		'es-ES': 'Obtener información sobre el bot',
+  	})
 	.setRun(async (client, interaction) => {
 		// get OS info
 		const osver = os.platform() + " " + os.release();
@@ -52,15 +58,15 @@ const command = new SlashCommand()
 		}
 		
 		const statsEmbed = new MessageEmbed()
-			.setTitle(`${ client.user.username } Information`)
+			.setTitle(`Información de ${ client.user.username }`)
 			.setColor(client.config.embedColor)
 			.setDescription(
-				`\`\`\`yml\nName: ${ client.user.username }#${ client.user.discriminator } [${ client.user.id }]\nAPI: ${ client.ws.ping }ms\nRuntime: ${ runtime }\`\`\``,
+				`\`\`\`yml\nNombre: ${ client.user.username }#${ client.user.discriminator } [${ client.user.id }]\nAPI: ${ client.ws.ping }ms\nRuntime: ${ runtime }\`\`\``,
 			)
 			.setFields([
 				{
-					name: `Lavalink stats`,
-					value: `\`\`\`yml\nUptime: ${ lavauptime }\nRAM: ${ lavaram } MB\nPlaying: ${
+					name: `Estadísticas de Lavalink`,
+					value: `\`\`\`yml\nUptime: ${ lavauptime }\nRAM: ${ lavaram } MB\nReproduciendo: ${
 						client.manager.nodes.values().next().value.stats.playingPlayers
 					} out of ${
 						client.manager.nodes.values().next().value.stats.players
@@ -68,7 +74,7 @@ const command = new SlashCommand()
 					inline: true,
 				},
 				{
-					name: "Bot stats",
+					name: "Estadísticas del Bot",
 					value: `\`\`\`yml\nGuilds: ${
 						client.guilds.cache.size
 					} \nNodeJS: ${ nodeVersion }\nDiscordMusicBot: v${
@@ -77,12 +83,12 @@ const command = new SlashCommand()
 					inline: true,
 				},
 				{
-					name: "System stats",
+					name: "Estadísticas del sistema",
 					value: `\`\`\`yml\nOS: ${ osver }\nUptime: ${ sysuptime }\n\`\`\``,
 					inline: false,
 				},
 			])
-			.setFooter({ text: `Build: ${ gitHash }` });
+			//.setFooter({ text: `Build: ${ gitHash }` });
 		return interaction.reply({ embeds: [statsEmbed], ephemeral: false });
 	});
 

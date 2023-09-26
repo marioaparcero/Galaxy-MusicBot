@@ -4,7 +4,13 @@ const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
   .setName("autoleave")
+  .setNameLocalizations({
+		'es-ES': 'autosalir',
+	})
   .setDescription("Automatically leaves when everyone leaves the voice channel (toggle)")
+  .setDescriptionLocalizations({
+		'es-ES': 'Se sale automáticamente cuando todos abandonan el canal de voz (alternar)',
+  })
   .setRun(async (client, interaction) => {
     let channel = await client.getChannel(client, interaction);
     if (!channel) return;
@@ -17,7 +23,7 @@ const command = new SlashCommand()
         embeds: [
           new MessageEmbed()
             .setColor("RED")
-            .setDescription("Lavalink node is not connected"),
+            .setDescription("El nodo Lavalink no está conectado"),
         ],
       });
 
@@ -26,7 +32,7 @@ const command = new SlashCommand()
         embeds: [
           new MessageEmbed()
             .setColor("RED")
-            .setDescription("There's nothing playing in the queue"),
+            .setDescription("No hay nada reproduciéndose en la cola"),
         ],
         ephemeral: true,
       });
@@ -42,17 +48,17 @@ const command = new SlashCommand()
       player.set("autoLeave", false);
     }
     autoLeaveEmbed
-			.setDescription(`**Auto Leave is** \`${!autoLeave ? "ON" : "OFF"}\``)
+			.setDescription(`**La salida automática es** \`${!autoLeave ? "ON" : "OFF"}\``)
 			.setFooter({
-			  text: `The player will ${!autoLeave ? "now automatically" : "not automatically"} leave when the voice channel is empty.`
+			  text: `El reproductor ${!autoLeave ? "saldrá" : "no saldrá"} automáticamente cuando el canal de voz esté vacío.`
 			});
     client.warn(
-      `Player: ${player.options.guild} | [${colors.blue(
+      `Reproductor: ${player.options.guild} | [${colors.blue(
         "autoLeave"
-      )}] has been [${colors.blue(!autoLeave ? "ENABLED" : "DISABLED")}] in ${
+      )}] ha sido [${colors.blue(!autoLeave ? "ENABLED" : "DISABLED")}] in ${
         client.guilds.cache.get(player.options.guild)
           ? client.guilds.cache.get(player.options.guild).name
-          : "a guild"
+          : "un servidor"
       }`
     );
 

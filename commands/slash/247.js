@@ -5,6 +5,9 @@ const SlashCommand = require("../../lib/SlashCommand");
 const command = new SlashCommand()
 	.setName("247")
 	.setDescription("Prevents the bot from ever disconnecting from a VC (toggle)")
+	.setDescriptionLocalizations({
+		'es-ES': 'Evita que el bot se desconecte de un VC (alternar)',
+  	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -19,7 +22,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -29,7 +32,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There's nothing to play 24/7."),
+						.setDescription("No hay nada para jugar las 24 horas del día, los 7 días de la semana."),
 				],
 				ephemeral: true,
 			});
@@ -46,19 +49,19 @@ const command = new SlashCommand()
 			player.set("twentyFourSeven", false);
 		}
 		twentyFourSevenEmbed
-		  .setDescription(`**24/7 mode is** \`${!twentyFourSeven ? "ON" : "OFF"}\``)
+		  .setDescription(`**El modo 24/7** \`${!twentyFourSeven ? "Encendido" : "Apagado"}\``)
 		  .setFooter({
-		    text: `The bot will ${!twentyFourSeven ? "now" : "no longer"} stay connected to the voice channel 24/7.`
+		    text: `El bot ${!twentyFourSeven ? "permanecerá" : "ya no permanecerá"} conectado al canal de voz las 24 horas del día, los 7 días de la semana.`
       });
 		client.warn(
-			`Player: ${ player.options.guild } | [${ colors.blue(
+			`Reproductor: ${ player.options.guild } | [${ colors.blue(
 				"24/7",
 			) }] has been [${ colors.blue(
 				!twentyFourSeven? "ENABLED" : "DISABLED",
 			) }] in ${
 				client.guilds.cache.get(player.options.guild)
 					? client.guilds.cache.get(player.options.guild).name
-					: "a guild"
+					: "un servidor"
 			}`,
 		);
 		

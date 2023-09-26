@@ -3,7 +3,13 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("clear")
+	.setNameLocalizations({
+		'es-ES': 'borrar',
+	})
 	.setDescription("Clear all tracks from queue")
+	.setDescriptionLocalizations({
+		'es-ES': 'Borrar todas las pistas de la cola',
+  	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -18,7 +24,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -28,7 +34,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Nothing is playing right now."),
+						.setDescription("Nada se está reproduciendo ahora."),
 				],
 				ephemeral: true,
 			});
@@ -37,7 +43,7 @@ const command = new SlashCommand()
 		if (!player.queue || !player.queue.length || player.queue.length === 0) {
 			let cembed = new MessageEmbed()
 				.setColor(client.config.embedColor)
-				.setDescription("❌ | **Invalid, Not enough track to be cleared.**");
+				.setDescription("❌ | **Inválido, no hay suficiente pista para ser despejado.**");
 			
 			return interaction.reply({ embeds: [cembed], ephemeral: true });
 		}
@@ -46,7 +52,7 @@ const command = new SlashCommand()
 		
 		let clearEmbed = new MessageEmbed()
 			.setColor(client.config.embedColor)
-			.setDescription(`✅ | **Cleared the queue!**`);
+			.setDescription(`✅ | **¡Cola limpiada!**`);
 		
 		return interaction.reply({ embeds: [clearEmbed] });
 	});

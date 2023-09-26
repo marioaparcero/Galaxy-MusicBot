@@ -5,5 +5,5 @@
 module.exports = (client) => {
 	client.manager.init(client.user.id);
 	client.user.setPresence(client.config.presence);
-	client.log("Successfully Logged in as " + client.user.tag);
+	client.log("Conectado como " + client.user.tag); //Successfully! Logged in as
 };

@@ -10,7 +10,7 @@ client.on("ready", async () => {
   const commands = await client.application.commands.fetch();
 
   if (commands.size === 0) {
-    console.log("Could not find any global commands.");
+    console.log("No se pudo encontrar ningún comando global.");
     process.exit();
   }
 
@@ -18,11 +18,11 @@ client.on("ready", async () => {
 
   commands.forEach(async (command) => {
     await client.application.commands.delete(command.id);
-    console.log(`Slash Command with ID ${command.id} has been deleted.`);
+    console.log(`Comando Slash con ID ${command.id} ha sido eliminado.`);
     deletedCount++;
 
     if (deletedCount === commands.size) {
-      console.log(`Successfully deleted all global slash commands.`);
+      console.log(`Se eliminaron con éxito todos los comandos de barra global.`);
       process.exit();
     }
   });

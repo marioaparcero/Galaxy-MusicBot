@@ -17,15 +17,15 @@ const rl = readline.createInterface({
 	});
 	
 	rl.question(
-		"Enter the guild id you wanted to deploy commands: ",
+		"Ingrese la ID del servidor en el que desea implementar los comandos: ",
 		async (guild) => {
-			console.log("Deploying commands to guild...");
+			console.log("Implementando comandos al servidor...");
 			await rest
 				.put(Routes.applicationGuildCommands(config.clientId, guild), {
 					body: commands,
 				})
 				.catch(console.log);
-			console.log("Successfully deployed commands!");
+			console.log("¡Comandos implementados con éxito!");
 			rl.close();
 		},
 	);

@@ -3,11 +3,17 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("skipto")
-	.setDescription("skip to a specific song in the queue")
+	.setNameLocalizations({
+		'es-ES': 'saltar',
+	})
+	.setDescription("Skip to a specific song in the queue")
+	.setDescriptionLocalizations({
+		'es-ES': 'Saltar a una canción específica en la cola',
+  	})
 	.addNumberOption((option) =>
 		option
 			.setName("number")
-			.setDescription("The number of tracks to skipto")
+			.setDescription("El número de pistas a saltar")
 			.setRequired(true),
 	)
 	
@@ -28,7 +34,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -38,7 +44,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("I'm not in a channel."),
+						.setDescription("No estoy en un canal."),
 				],
 				ephemeral: true,
 			});
@@ -52,7 +58,7 @@ const command = new SlashCommand()
 			if (!position || position < 0 || position > player.queue.size) {
 				let thing = new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription("❌ | Invalid position!");
+					.setDescription("❌ | ¡Posición invalida!");
 				return interaction.editReply({ embeds: [thing] });
 			}
 			
@@ -61,7 +67,7 @@ const command = new SlashCommand()
 			
 			let thing = new MessageEmbed()
 				.setColor(client.config.embedColor)
-				.setDescription("✅ | Skipped to position " + position);
+				.setDescription("✅ | Posicion saltada " + position);
 			
 			return interaction.editReply({ embeds: [thing] });
 		} catch {
@@ -72,7 +78,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setDescription("✅ | Skipped to position " + position),
+						.setDescription("✅ | Posicion saltada " + position),
 				],
 			});
 		}

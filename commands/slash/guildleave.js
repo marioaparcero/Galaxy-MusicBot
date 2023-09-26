@@ -6,11 +6,20 @@ const { forEach } = require("lodash");
 
 const command = new SlashCommand()
 	.setName("guildleave")
-	.setDescription("leaves a guild")
+	.setNameLocalizations({
+		'es-ES': 'dejarservidor',
+	})
+	.setDescription("Leaves a guild")
+	.setDescriptionLocalizations({
+		'es-ES': 'Deja un servidor',
+  	})
     .addStringOption((option) =>
     option
       .setName("id")
       .setDescription("Enter the guild id to leave (type `list` for guild ids)")
+	  .setDescriptionLocalizations({
+		'es-ES': 'Ingrese la identificación del servidor para salir (escriba `list` para identificar del servidor)',
+		})
       .setRequired(true)
   )
   .setRun(async (client, interaction, options) => {
@@ -46,7 +55,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setDescription("You are not authorized to use this command!"),
+						.setDescription("¡No estás autorizado a utilizar este comando!"),
 				],
 				ephemeral: true,
 			});

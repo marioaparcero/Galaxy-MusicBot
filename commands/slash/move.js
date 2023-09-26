@@ -3,17 +3,26 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("move")
+	.setNameLocalizations({
+		'es-ES': 'mover',
+	})
 	.setDescription("Moves track to a different position")
+	.setDescriptionLocalizations({
+		'es-ES': 'Mueve la pista a una posición diferente',
+  	})
 	.addIntegerOption((option) =>
 		option
 			.setName("track")
 			.setDescription("The track number to move")
+			.setDescriptionLocalizations({
+				'es-ES': 'El número de pista a mover',
+		  	})
 			.setRequired(true),
 	)
 	.addIntegerOption((option) =>
 		option
 			.setName("position")
-			.setDescription("The position to move the track to")
+			.setDescription("La posición a la que mover la pista")
 			.setRequired(true),
 	)
 	
@@ -34,7 +43,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -44,7 +53,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There's nothing playing."),
+						.setDescription("No hay nada reproduciendo."),
 				],
 				ephemeral: true,
 			});
@@ -52,12 +61,12 @@ const command = new SlashCommand()
 		
 		let trackNum = Number(track) - 1;
 		if (trackNum < 0 || trackNum > player.queue.length - 1) {
-			return interaction.reply(":x: | **Invalid track number**");
+			return interaction.reply(":x: | **Número de pista no válido**");
 		}
 		
 		let dest = Number(position) - 1;
 		if (dest < 0 || dest > player.queue.length - 1) {
-			return interaction.reply(":x: | **Invalid position number**");
+			return interaction.reply(":x: | **Número de posición no válido**");
 		}
 		
 		const thing = player.queue[trackNum];
@@ -67,7 +76,7 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription(":white_check_mark: | **Moved track**"),
+					.setDescription(":white_check_mark: | **Pista movida**"),
 			],
 		});
 	});

@@ -4,7 +4,13 @@ const prettyMilliseconds = require("pretty-ms");
 
 const command = new SlashCommand()
 	.setName("save")
+	.setNameLocalizations({
+		'es-ES': 'guardar',
+	})
 	.setDescription("Saves current song to your DM's")
+	.setDescriptionLocalizations({
+		'es-ES': 'Guarda la canción actual en tu DM.',
+  	})
 	.setRun(async (client, interaction) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -19,7 +25,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -29,7 +35,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There is no music playing right now."),
+						.setDescription("No hay música sonando en este momento."),
 				],
 				ephemeral: true,
 			});
@@ -38,27 +44,27 @@ const command = new SlashCommand()
 		const sendtoDmEmbed = new MessageEmbed()
 			.setColor(client.config.embedColor)
 			.setAuthor({
-				name: "Saved track",
+				name: "Pista guardada",
 				iconURL: `${ interaction.user.displayAvatarURL({ dynamic: true }) }`,
 			})
 			.setDescription(
-				`**Saved [${ player.queue.current.title }](${ player.queue.current.uri }) to your DM**`,
+				`**[${ player.queue.current.title }](${ player.queue.current.uri }) guardados en tu DM**`,
 			)
 			.addFields(
 				{
-					name: "Track Duration",
+					name: "Duración de la pista",
 					value: `\`${ prettyMilliseconds(player.queue.current.duration, {
 						colonNotation: true,
 					}) }\``,
 					inline: true,
 				},
 				{
-					name: "Track Author",
+					name: "Autor de la pista",
 					value: `\`${ player.queue.current.author }\``,
 					inline: true,
 				},
 				{
-					name: "Requested Guild",
+					name: "Servidor solicitado",
 					value: `\`${ interaction.guild }\``,
 					inline: true,
 				},
@@ -71,7 +77,7 @@ const command = new SlashCommand()
 				new MessageEmbed()
 					.setColor(client.config.embedColor)
 					.setDescription(
-						"Please check your **DMs**. If you didn't receive any message from me please make sure your **DMs** are open",
+						"Por favor revisa tus **DM**. Si no recibió ningún mensaje mío, asegúrese de que sus **DM** estén abiertos",
 					),
 			],
 			ephemeral: true,

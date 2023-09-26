@@ -3,11 +3,20 @@ const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
 	.setName("filters")
+	.setNameLocalizations({
+		'es-ES': 'filtros',
+	})
 	.setDescription("add or remove filters")
+	.setDescriptionLocalizations({
+		'es-ES': 'agregar o quitar filtros',
+  	})
 	.addStringOption((option) =>
 		option
 			.setName("preset")
 			.setDescription("the preset to add")
+			.setDescriptionLocalizations({
+				'es-ES': 'el preset para agregar',
+			})
 			.setRequired(true)
 			.addChoices(
 				{ name: "Nightcore", value: "nightcore" },
@@ -40,7 +49,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -50,7 +59,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There's no music playing."),
+						.setDescription("No se está reproduciendo música."),
 				],
 				ephemeral: true,
 			});
@@ -60,40 +69,40 @@ const command = new SlashCommand()
 		let filtersEmbed = new MessageEmbed().setColor(client.config.embedColor);
 		
 		if (args == "nightcore") {
-			filtersEmbed.setDescription("✅ | Nightcore filter is now active!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Nigthcore ya está activado!");
 			player.nightcore = true;
 		} else if (args == "bassboost") {
-			filtersEmbed.setDescription("✅ | BassBoost filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro BassBoost ya está activado!");
 			player.bassboost = true;
 		} else if (args == "vaporwave") {
-			filtersEmbed.setDescription("✅ | Vaporwave filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Vaporwave ya está activado!");
 			player.vaporwave = true;
 		} else if (args == "pop") {
-			filtersEmbed.setDescription("✅ | Pop filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Pop ya está activado!");
 			player.pop = true;
 		} else if (args == "soft") {
-			filtersEmbed.setDescription("✅ | Soft filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Soft ya está activado!");
 			player.soft = true;
 		} else if (args == "treblebass") {
-			filtersEmbed.setDescription("✅ | Treblebass filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Treblebass ya está activado!");
 			player.treblebass = true;
 		} else if (args == "eightD") {
-			filtersEmbed.setDescription("✅ | Eight Dimension filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Eight Dimension ya está activado!");
 			player.eightD = true;
 		} else if (args == "karaoke") {
-			filtersEmbed.setDescription("✅ | Karaoke filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Karaoke ya está activado!");
 			player.karaoke = true;
 		} else if (args == "vibrato") {
-			filtersEmbed.setDescription("✅ | Vibrato filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Vibrato ya está activado!");
 			player.vibrato = true;
 		} else if (args == "tremolo") {
-			filtersEmbed.setDescription("✅ | Tremolo filter is now on!");
+			filtersEmbed.setDescription("✅ | ¡El filtro Tremolo ya está activado!");
 			player.tremolo = true;
 		} else if (args == "off") {
-			filtersEmbed.setDescription("✅ | EQ has been cleared!");
+			filtersEmbed.setDescription("✅ | ¡EQ ha sido limpiado!");
 			player.reset();
 		} else {
-			filtersEmbed.setDescription("❌ | Invalid filter!");
+			filtersEmbed.setDescription("❌ | ¡Filtro inválido!");
 		}
 		
 		return interaction.reply({ embeds: [filtersEmbed] });

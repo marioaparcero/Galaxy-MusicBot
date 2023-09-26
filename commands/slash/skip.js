@@ -3,7 +3,13 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("skip")
+	.setNameLocalizations({
+		'es-ES': 'siguiente',
+	})
 	.setDescription("Skip the current song")
+	.setDescriptionLocalizations({
+		'es-ES': 'Saltar la canción actual',
+  	})
 	.setRun(async (client, interaction, options) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -18,7 +24,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -28,7 +34,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There is nothing to skip."),
+						.setDescription("No hay nada para saltar."),
 				],
 				ephemeral: true,
 			});
@@ -40,7 +46,7 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor("RED")
-					.setDescription(`There is nothing after [${ song.title }](${ song.uri }) in the queue.`),
+					.setDescription(`No hay nada después de [${ song.title }](${ song.uri }) en la cola.`),
 			],
 		})}
 		
@@ -51,7 +57,7 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription("✅ | **Skipped!**"),
+					.setDescription("✅ | **¡Saltada!**"),
 			],
 		});
 	});

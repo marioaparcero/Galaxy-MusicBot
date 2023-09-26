@@ -3,11 +3,20 @@ const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("remove")
+	.setNameLocalizations({
+		'es-ES': 'eliminar',
+	})
 	.setDescription("Remove track you don't want from queue")
+	.setDescriptionLocalizations({
+		'es-ES': 'Elimina la pista que no quieres de la cola',
+  	})
 	.addNumberOption((option) =>
 		option
 			.setName("number")
 			.setDescription("Enter track number.")
+			.setDescriptionLocalizations({
+				'es-ES': 'Introduzca el número de pista.',
+		  	})
 			.setRequired(true),
 	)
 	
@@ -27,7 +36,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}

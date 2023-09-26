@@ -4,7 +4,13 @@ const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
 	.setName("autoqueue")
+	.setNameLocalizations({
+		'es-ES': 'autocola',
+	})
 	.setDescription("Automatically add songs to the queue (toggle)")
+	.setDescriptionLocalizations({
+		'es-ES': 'Agregar canciones automáticamente a la cola (alternar)',
+  	})
 	.setRun(async (client, interaction) => {
 		let channel = await client.getChannel(client, interaction);
 		if (!channel) {
@@ -19,7 +25,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Lavalink node is not connected"),
+						.setDescription("El nodo Lavalink no está conectado"),
 				],
 			});
 		}
@@ -29,7 +35,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There's nothing playing in the queue"),
+						.setDescription("No hay nada reproduciéndose en la cola"),
 				],
 				ephemeral: true,
 			});
@@ -45,17 +51,17 @@ const command = new SlashCommand()
 			player.set("autoQueue", false);
 		}
 		autoQueueEmbed
-		  .setDescription(`**Auto Queue is** \`${!autoQueue ? "ON" : "OFF"}\``)
+		  .setDescription(`**La cola automática está** \`${!autoQueue ? "Encendida" : "Apagada"}\``)
 		  .setFooter({
-		    text: `Related music will ${!autoQueue ? "now be automatically" : "no longer be"} added to the queue.`
+		    text: `La música relacionada ${!autoQueue ? "ahora" : "ya no"} se agregará automáticamente a la cola.`
       });
 		client.warn(
-			`Player: ${ player.options.guild } | [${ colors.blue(
+			`Reproductor: ${ player.options.guild } | [${ colors.blue(
 				"AUTOQUEUE",
-			) }] has been [${ colors.blue(!autoQueue? "ENABLED" : "DISABLED") }] in ${
+			) }] ha sido [${ colors.blue(!autoQueue? "ENABLED" : "DISABLED") }] in ${
 				client.guilds.cache.get(player.options.guild)
 					? client.guilds.cache.get(player.options.guild).name
-					: "a guild"
+					: "un servidor"
 			}`,
 		);
 		
