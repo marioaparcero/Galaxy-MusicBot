@@ -46,7 +46,8 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor("RED")
-					.setDescription(`No hay nada después de [${ song.title }](${ song.uri }) en la cola.`),
+					//.setDescription(`No hay nada después de [${ song.title }](${ song.uri }) en la cola.`),
+					.setDescription(`La última canción de la lista es:\n [${ song.title }](${ song.uri })`),
 			],
 		})}
 		

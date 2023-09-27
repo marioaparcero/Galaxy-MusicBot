@@ -10,7 +10,8 @@ module.exports = async (client, interaction) => {
 			await interaction.reply({
 				embeds: [
 					client.ErrorEmbed(
-						"You must be in a voice channel to use this command!",
+						//"You must be in a voice channel to use this command!",
+						"¡Debes estar en un canal de voz para usar este comando!",
 					),
 				],
 			});
@@ -24,7 +25,8 @@ module.exports = async (client, interaction) => {
 			await interaction.reply({
 				embeds: [
 					client.ErrorEmbed(
-						"You must be in the same voice channel as me to use this command!",
+						//"You must be in the same voice channel as me to use this command!",
+						"¡Debes estar en el mismo canal de voz que yo para usar este comando!",
 					),
 				],
 			});
@@ -34,7 +36,8 @@ module.exports = async (client, interaction) => {
 			await interaction.reply({
 				embeds: [
 					client.ErrorEmbed(
-						"I don't have enough permission to join your voice channel!",
+						//"I don't have enough permission to join your voice channel!",
+						"¡No tengo permiso suficiente para unirme a tu canal de voz!",
 					),
 				],
 			});

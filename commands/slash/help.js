@@ -19,6 +19,10 @@ const command = new SlashCommand()
 		'es-ES': 'Muestra esta lista',
   })
   .setRun(async (client, interaction) => {
+    // TODO: Obtén la localización del usuario
+    //const userLocale = interaction.user;
+    //console.log('Idioma del usuario', userLocale)
+    const userLocale = 'es-ES';
     await interaction.deferReply().catch((_) => {});
     // map the commands name and description to the embed
     const commands = await LoadCommands().then((cmds) => {
@@ -26,11 +30,14 @@ const command = new SlashCommand()
     });
     // from commands remove the ones that have "null" in the description
     const filteredCommands = commands.filter(
-      (cmd) => cmd.description != "null"
+      (cmd) => cmd.description_localizations[userLocale] != "null"
     );
-    //console.log(filteredCommands);
+    console.log(filteredCommands);
     const totalCmds = filteredCommands.length;
     let maxPages = Math.ceil(totalCmds / client.config.helpCmdPerPage);
+
+    // Obtén las descripciones localizadas de los comandos
+    //const localizedDescriptions = commands.map((cmd) => cmd.descriptionLocalizations[userLocale] || cmd.description);
 
     // if git exists, then get commit hash
     let gitHash = "";
@@ -63,8 +70,11 @@ const command = new SlashCommand()
     );
 
     tempArray.forEach((cmd) => {
-      helpEmbed.addFields({ name: cmd.name, value: cmd.description });
+      helpEmbed.addFields({ name: cmd.name, value: cmd.description_localizations[userLocale] });
     });
+    // localizedDescriptions.forEach((description, index) => {
+    //   helpEmbed.addFields({ name: commands[index].name, value: description });
+    // });
     // helpEmbed.addFields({
     //   name: "Credits",
     //   value:
@@ -118,18 +128,18 @@ const command = new SlashCommand()
       tempArray.forEach((cmd) => {
         //console.log(cmd);
         helpEmbed
-          .addFields({ name: cmd.name, value: cmd.description })
-          .setFooter({ text: `Page ${pageNo + 1} / ${maxPages}` });
+          .addFields({ name: cmd.name, value: cmd.description_localizations[userLocale] })
+          .setFooter({ text: `Página ${pageNo + 1} / ${maxPages}` });
       });
-      helpEmbed.addFields({
-        name: "Credits",
-        value:
-          `Discord Music Bot Version: v${
-            require("../../package.json").version
-          }; Build: ${gitHash}` +
-          "\n" +
-          `[✨ Support Server](${client.config.supportServer}) | [Issues](${client.config.Issues}) | [Source](https://github.com/SudhanPlayz/Discord-MusicBot/tree/v5) | [Invite Me](https://discord.com/oauth2/authorize?client_id=${client.config.clientId}&permissions=${client.config.permissions}&scope=bot%20applications.commands)`,
-      });
+      // helpEmbed.addFields({
+      //   name: "Credits",
+      //   value:
+      //     `Discord Music Bot Version: v${
+      //       require("../../package.json").version
+      //     }; Build: ${gitHash}` +
+      //     "\n" +
+      //     `[✨ Support Server](${client.config.supportServer}) | [Issues](${client.config.Issues}) | [Source](https://github.com/SudhanPlayz/Discord-MusicBot/tree/v5) | [Invite Me](https://discord.com/oauth2/authorize?client_id=${client.config.clientId}&permissions=${client.config.permissions}&scope=bot%20applications.commands)`,
+      // });
       await iter.update({
         embeds: [helpEmbed],
         components: [getButtons(pageNo)],
