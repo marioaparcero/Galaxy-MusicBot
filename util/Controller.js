@@ -12,7 +12,7 @@ module.exports = async (client, interaction) => {
 	if (!player) {
 		await interaction.reply({
 			embeds: [
-				client.Embed("❌ | **No hay ningún jugador que controlar en este servidor.**"),
+				client.Embed("❌ | **No hay ningún reproductor para controlar en este servidor.**"),
 			],
 		});
 		setTimeout(() => {
@@ -77,7 +77,7 @@ module.exports = async (client, interaction) => {
 			embeds: [
 				new MessageEmbed()
 					.setColor("RED")
-					.setDescription(`No se reproduce ninguna canción anterior.`),
+					.setDescription(`No se ha reproducido ninguna canción anterior.`),
 			],
 		});
     }
@@ -126,7 +126,8 @@ module.exports = async (client, interaction) => {
 			embeds: [
 				new MessageEmbed()
 					.setColor("RED")
-					.setDescription(`No hay nada después [${ song.title }](${ song.uri }) en la cola.`),
+					//.setDescription(`No hay nada después [${ song.title }](${ song.uri }) en la cola.`),
+					.setDescription(`La última canción de la lista es:\n [${ song.title }](${ song.uri })`),
 			],
 		})} else player.stop();
 		return interaction.deferUpdate
@@ -146,6 +147,86 @@ module.exports = async (client, interaction) => {
 		interaction.update({
 			components: [client.createController(player.options.guild, player)],
 		});
+		return;
+	}
+	if (property === "Queue") {
+		const queue = player.queue;
+		if (queue.length === 0) {
+			interaction.reply({
+				ephemeral: true,
+				embeds: [
+					new MessageEmbed()
+						.setColor("RED")
+						.setDescription("La cola de reproducción está vacía.\nPuedes añadir más con el comando </play:1155720709063065647>"),
+				],
+			});
+		} else {
+			// TODO: Revisar que no haya overbuffer con las lista de reprodución y controlar las páginas de la lista.
+			const escapeMarkdown = require('discord.js').Util.escapeMarkdown;
+			const load = require("lodash");
+			const pms = require("pretty-ms");
+
+			// let queueDuration = player.queue.duration.valueOf()
+			// if (player.queue.current.isStream) {
+			// 	queueDuration -= player.queue.current.duration
+			// }
+			// for (let i = 0; i < player.queue.length; i++) {
+			// 	if (player.queue[i].isStream) {
+			// 		queueDuration -= player.queue[i].duration
+			// 	}
+			// }
+			
+			const mapping = player.queue.map(
+				(t, i) => `\` ${ ++i } \` [${ t.title }](${ t.uri }) [${ t.requester }]`,
+			);
+			const chunk = load.chunk(mapping, 10);
+			//const pages = chunk.map((s) => s.join("\n"));
+			// let page = interaction.options.getNumber("page");
+			// if (!page) {
+			// 	page = 0;
+			// }
+			// if (page) {
+			// 	page = page - 1;
+			// }
+			// if (page > pages.length) {
+			// 	page = 0;
+			// }
+			// if (page < 0) {
+			// 	page = 0;
+			// }
+			let song = player.queue.current;
+			var title = escapeMarkdown(song.title)
+			var title = title.replace(/\]/g,"")
+			var title = title.replace(/\[/g,"")
+			const queueEmbed = new MessageEmbed()
+				.setColor(client.config.embedColor)
+				.setTitle("♪ Cola de Reproducción")
+				// .setDescription(
+				// 	`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n`, //\n${ pages[page] }`,
+				// )
+				.setDescription(`A continuación se muestra la cola de reproducción:\n\n**Canciones en cola (${player.queue.totalSize - 1})**\n`) //Pistas en cola - Canciones en espera //ㅤㅤㅤㅤㅤPara saltar: </saltar:1156301243359187028>
+				.addFields(
+					queue.map((track, index) => ({
+						name: `\n`,
+						//name: `\`${index + 1}\`. [${ track.title }](${ song.uri })`,
+						//name: `${index + 1}. ${track.title}`,
+						value: `\`${index + 1}\`. [${ track.title }](${ song.uri }) [${ track.requester }]\n Duración: ${track.isStream ? "LIVE" : pms(track.duration, { colonNotation: true })}`,
+					})),
+					// {
+					// 	name: "Para saltar:",
+					// 	value: `</saltar:1156301243359187028>\n\n**${player.queue.totalSize - 1} canciones en espera**\nNo hay canciones en espera. ¡Agrega una!`
+					// }
+					{
+						name: " ",
+						value: `Para saltar a una canción: </saltar:1156301243359187028>\n\n`
+					}
+					// {
+					// 	name: `**${player.queue.totalSize - 1} canciones en espera**`,
+					// 	value: `\nNo hay canciones en espera. ¡Agrega una!`
+					// }
+				);
+			interaction.reply({ embeds: [queueEmbed], ephemeral: true });
+		}
 		return;
 	}
 
