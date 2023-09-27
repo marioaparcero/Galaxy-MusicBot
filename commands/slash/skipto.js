@@ -2,23 +2,24 @@ const SlashCommand = require("../../lib/SlashCommand");
 const { MessageEmbed } = require("discord.js");
 
 const command = new SlashCommand()
-	.setName("skipto")
+	.setName("saltar")
 	.setNameLocalizations({
-		'es-ES': 'saltar',
+		'en-US': 'skipto',
+		'en-GB': 'skipto',
 	})
-	.setDescription("Skip to a specific song in the queue")
+	.setDescription("🎧 Skip to a specific song in the queue")
 	.setDescriptionLocalizations({
-		'es-ES': 'Saltar a una canción específica en la cola',
+		'es-ES': '🎧 Salta a una canción específica en la cola', //Salta una o más canciones en la cola
   	})
 	.addNumberOption((option) =>
 		option
-			.setName("number")
-			.setDescription("El número de pistas a saltar")
+			.setName("canciones")
+			.setDescription("El número de pistas a saltar") //Cantidad de canciones a saltar
 			.setRequired(true),
 	)
 	
 	.setRun(async (client, interaction, options) => {
-		const args = interaction.options.getNumber("number");
+		const args = interaction.options.getNumber("canciones");
 		//const duration = player.queue.current.duration
 		
 		let channel = await client.getChannel(client, interaction);

@@ -7,9 +7,9 @@ const {
 } = require("discord.js");
 
 const command = new SlashCommand()
-  .setName("search")
+  .setName("buscar")
   .setNameLocalizations({
-		'es-ES': 'buscar',
+		'en-US': 'search',
 	})
   .setDescription("Search for a song")
   .setDescriptionLocalizations({
@@ -18,6 +18,9 @@ const command = new SlashCommand()
   .addStringOption((option) =>
     option
       .setName("query")
+      .setNameLocalizations({
+        'es-ES': 'canción',
+      })
       .setDescription("The song to search for")
       .setDescriptionLocalizations({
         'es-ES': 'La canción para buscar',
