@@ -20,6 +20,9 @@ const command = new SlashCommand()
 	.addStringOption((option) =>
 		option
 			.setName("song")
+			.setNameLocalizations({
+				'es-ES': 'canción',
+			})
 			.setDescription("The song to get lyrics for")
 			.setDescriptionLocalizations({
 				'es-ES': 'La canción para obtener letra',

@@ -1,4 +1,12 @@
 //JotaroKujo0525 note, this is a deed that i should've done a long time ago
+// Comandos para ejecutar el bot
+//pm2 start java -- -jar Lavalink.jar
+//pm2 start java --name "Lavalink Proceso" --interpreter none -- arg "-jar" "Lavalink.jar"
+//if you wanna limit it to only using X amount of ram you can do java -XmxXG -jar Lavalink.jar I.e. java -Xmx2G -jar Lavalink.jar
+//npm i
+//npm run deploy
+//node .
+
 require('dotenv').config()
 
 const DiscordMusicBot = require("./lib/DiscordMusicBot");

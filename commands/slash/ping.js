@@ -3,9 +3,9 @@ const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
   .setName("ping")
-  // .setNameLocalizations({
-	// 	'es-ES': '',
-	// })
+  .setNameLocalizations({
+		'es-ES': 'ping',
+	})
   .setDescription("View the bot's latency")
   .setDescriptionLocalizations({
 		'es-ES': 'Ver la latencia del bot!',

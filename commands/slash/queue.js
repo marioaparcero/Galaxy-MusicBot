@@ -34,20 +34,26 @@ const command = new SlashCommand()
 		}
 		
 		if (!player) {
+			const locales = {
+				'es-ES': 'No hay canciones en la cola',
+			};
 			return interaction.reply({
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There are no songs in the queue."),
+						.setDescription(locales[interaction.locale] ?? 'There are no songs in the queue.')
 				],
 				ephemeral: true,
 			});
 		}
 		
 		if (!player.playing) {
+			const locales = {
+				'es-ES': 'No hay nada reproduciendo.',
+			};
 			const queueEmbed = new MessageEmbed()
 				.setColor(client.config.embedColor)
-				.setDescription("No hay nada reproduciendo.");
+				.setDescription(locales[interaction.locale] ?? "There's nothing playing.");
 			return interaction.reply({ embeds: [queueEmbed], ephemeral: true });
 		}
 		
@@ -143,7 +149,7 @@ const command = new SlashCommand()
 							inline: true,
 						},
 						{
-							name: "Duración total de las pistas",
+							name: "Duración de la lista", //Duración total de las pistas
 							value: `\`${ pms(queueDuration, {
 								colonNotation: true,
 							}) }\``,

@@ -34,7 +34,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("No se reproduce música."),
+						.setDescription("No se está reproduciendo música.\nPuedes reproducir una con el comando </play:1155720709063065647>"),
 				],
 				ephemeral: true,
 			});
