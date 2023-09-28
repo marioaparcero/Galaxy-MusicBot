@@ -14,6 +14,9 @@ const command = new SlashCommand()
 	.addStringOption((option) =>
 		option
 			.setName("time")
+			.setNameLocalizations({
+				'es-ES': 'tiempo',
+			})
 			.setDescription("Seek to time you want. Ex 1h 30m | 2h | 100m | 50s")
 			.setDescriptionLocalizations({
 				'es-ES': 'Busca el momento que quieras. Ejemplo 1h 30m | 2h | 100m | 50s',

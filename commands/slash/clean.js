@@ -12,6 +12,9 @@ const command = new SlashCommand()
 	.addIntegerOption((option) =>
 		option
 			.setName("number")
+			.setNameLocalizations({
+				'es-ES': 'número',
+			})
 			.setDescription("Number of messages to delete.")
 			.setDescriptionLocalizations({
 				'es-ES': 'Número de mensajes a eliminar.',

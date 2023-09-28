@@ -13,6 +13,9 @@ const command = new SlashCommand()
 	.addNumberOption((option) =>
 		option
 			.setName("amount")
+			.setNameLocalizations({
+				'es-ES': 'cantidad',
+			})
 			.setDescription("Amount of volume you want to change. Ex: 10")
 			.setDescriptionLocalizations({
 				'es-ES': 'Cantidad de volumen que desea cambiar. Ej: 10',

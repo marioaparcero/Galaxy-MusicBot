@@ -13,6 +13,9 @@ const command = new SlashCommand()
 	.addStringOption((option) =>
 		option
 			.setName("preset")
+			// .setNameLocalizations({
+			// 	'es-ES': 'preset',
+			// })
 			.setDescription("the preset to add")
 			.setDescriptionLocalizations({
 				'es-ES': 'el preset para agregar',

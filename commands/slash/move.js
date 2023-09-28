@@ -13,6 +13,9 @@ const command = new SlashCommand()
 	.addIntegerOption((option) =>
 		option
 			.setName("track")
+			.setNameLocalizations({
+				'es-ES': 'pista',
+			})
 			.setDescription("The track number to move")
 			.setDescriptionLocalizations({
 				'es-ES': 'El número de pista a mover',

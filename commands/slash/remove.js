@@ -13,6 +13,9 @@ const command = new SlashCommand()
 	.addNumberOption((option) =>
 		option
 			.setName("number")
+			.setNameLocalizations({
+				'es-ES': 'número',
+			})
 			.setDescription("Enter track number.")
 			.setDescriptionLocalizations({
 				'es-ES': 'Introduzca el número de pista.',
@@ -46,7 +49,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There are no songs to remove."),
+						.setDescription("No hay canciones para eliminar."),
 				],
 				ephemeral: true,
 			});
@@ -59,7 +62,7 @@ const command = new SlashCommand()
 			let thing = new MessageEmbed()
 				.setColor(client.config.embedColor)
 				.setDescription(
-					`Current queue has only **${ player.queue.size }** track`,
+					`La cola actual tiene solo **${ player.queue.size }** pistas.`,
 				);
 			return interaction.editReply({ embeds: [thing] });
 		}
@@ -70,7 +73,7 @@ const command = new SlashCommand()
 		const number = position + 1;
 		let removeEmbed = new MessageEmbed()
 			.setColor(client.config.embedColor)
-			.setDescription(`Removed track number **${ number }** from queue`);
+			.setDescription(`Se eliminó la pista número **${ number }** de la cola.`);
 		return interaction.editReply({ embeds: [removeEmbed] });
 	});
 
