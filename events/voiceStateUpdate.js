@@ -77,11 +77,11 @@ module.exports = async (client, oldState, newState) => {
 					player.pause(false);
 					let playerResumed = new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setTitle(`Resumed!`, client.config.iconURL)
+						.setTitle(`¡Reanudado!`, client.config.iconURL)
 						.setDescription(
-							`Playing  [${ player.queue.current.title }](${ player.queue.current.uri })`,
+							`Reproduciendo  [${ player.queue.current.title }](${ player.queue.current.uri })`,
 						)
-						.setFooter({ text: `The current song has been resumed.` });
+						.setFooter({ text: `La canción actual ha sido reanudada.` });
 					
 					let resumeMessage = await client.channels.cache
 						.get(player.textChannel)
@@ -106,9 +106,10 @@ module.exports = async (client, oldState, newState) => {
 					
 					let playerPaused = new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setTitle(`Paused!`, client.config.iconURL)
+						.setTitle(`¡Pausado!`, client.config.iconURL)
 						.setFooter({
-							text: `The current song has been paused because theres no one in the voice channel.`,
+							//text: `The current song has been paused because theres no one in the voice channel.`,
+							text: `La canción actual se ha pausado porque no hay nadie en el canal de voz.`,
 						});
 					
 					let pausedMessage = await client.channels.cache
@@ -125,10 +126,11 @@ module.exports = async (client, oldState, newState) => {
 								let leftEmbed = new MessageEmbed()
 									.setColor(client.config.embedColor)
 									.setAuthor({
-									name: "Disconnected!",
+									name: "¡Desconectado!",
 									iconURL: client.config.iconURL,
 									})
-									.setFooter({ text: "Left because there is no one left in the voice channel." })
+									//.setFooter({ text: "Left because there is no one left in the voice channel." })
+									.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 									.setTimestamp();
 								let Disconnected = await client.channels.cache
 									.get(player.textChannel)
@@ -143,10 +145,11 @@ module.exports = async (client, oldState, newState) => {
 						let leftEmbed = new MessageEmbed()
 							.setColor(client.config.embedColor)
 							.setAuthor({
-							name: "Disconnected!",
+							name: "¡Desconectado!",
 							iconURL: client.config.iconURL,
 							})
-							.setFooter({ text: "Left because there is no one left in the voice channel." })
+							//.setFooter({ text: "Left because there is no one left in the voice channel." })
+							.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 							.setTimestamp();
 						let Disconnected = await client.channels.cache
 							.get(player.textChannel)
@@ -162,9 +165,10 @@ module.exports = async (client, oldState, newState) => {
 					
 					let playerPaused = new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setTitle(`Paused!`, client.config.iconURL)
+						.setTitle(`¡Pausado!`, client.config.iconURL)
 						.setFooter({
-							text: `The current song has been paused because theres no one in the voice channel.`,
+							//text: `The current song has been paused because theres no one in the voice channel.`,
+							text: `La canción actual se ha pausado porque no hay nadie en el canal de voz.`,
 						});
 					
 					let pausedMessage = await client.channels.cache
@@ -177,10 +181,11 @@ module.exports = async (client, oldState, newState) => {
 							let leftEmbed = new MessageEmbed()
 								.setColor(client.config.embedColor)
 								.setAuthor({
-								name: "Disconnected!",
+								name: "¡Desconectado!",
 								iconURL: client.config.iconURL,
 								})
-								.setFooter({ text: "Left because there is no one left in the voice channel." })
+								//.setFooter({ text: "Left because there is no one left in the voice channel." })
+								.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 								.setTimestamp();
 							let Disconnected = await client.channels.cache
 								.get(player.textChannel)
@@ -197,10 +202,11 @@ module.exports = async (client, oldState, newState) => {
 						let leftEmbed = new MessageEmbed()
 						.setColor(client.config.embedColor)
 						.setAuthor({
-						name: "Disconnected!",
+						name: "¡Desconectado!", //Disconnected!
 						iconURL: client.config.iconURL,
 						})
-						.setFooter({ text: "Left because there is no one left in the voice channel." })
+						//.setFooter({ text: "Left because there is no one left in the voice channel." })
+						.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 						.setTimestamp();
 						let Disconnected = await client.channels.cache
 							.get(player.textChannel)
