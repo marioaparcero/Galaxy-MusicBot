@@ -101,9 +101,13 @@ module.exports = {
       var title = title.replace(/\[/g, "");
       let addQueueEmbed = new MessageEmbed()
         .setColor(client.config.embedColor)
-        .setAuthor({ name: "Agregado a la cola", iconURL: client.config.iconURL })
+        .setAuthor({ name: `Agregado a la cola`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) }) //client.config.iconURL
+        //.setAuthor({ name: "Agregado a la cola", iconURL: client.config.iconURL })
+        //.setAuthor({ name: `Agregado a la cola por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
         .setDescription(`[${title}](${res.tracks[0].uri})` || "Sin título")
         .setURL(res.tracks[0].uri)
+        //.setTimestamp()
+        //.setFooter({ text: `Agregado a la cola por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
         .addFields(
           {
             name: "Añadido por",

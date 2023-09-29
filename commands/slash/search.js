@@ -149,16 +149,20 @@ const command = new SlashCommand()
             content: null,
             embeds: [
               new MessageEmbed()
-                .setAuthor({
-                  name: "Agregado a la cola",
-                  iconURL: client.config.iconURL,
-                })
+              .setAuthor({ name: `Agregado a la cola`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) }) //client.config.iconURL
+              //.setAuthor({ name: `Agregado a la cola por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+              // .setAuthor({
+              //   name: "Agregado a la cola",
+              //   iconURL: client.config.iconURL,
+              // })
                 .setURL(res.tracks[0].uri)
                 .setThumbnail(res.tracks[0].displayThumbnail("maxresdefault"))
                 .setDescription(
                   `[${trackForPlay?.tracks[0]?.title}](${trackForPlay?.tracks[0].uri})` ||
                     "Sin título"
                 )
+                //.setTimestamp()
+                //.setFooter({ text: `Agregado a la cola por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
                 .addFields(
                   {
                     name: "Añadido por",
