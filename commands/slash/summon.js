@@ -34,7 +34,7 @@ const command = new SlashCommand()
 		
 		interaction.reply({
 			embeds: [
-				client.Embed(`:thumbsup: | **Se unió exitosamente a <#${ channel.id }>!**`),
+				client.Embed(`:thumbsup: | **Se ha unido con éxito a <#${ channel.id }>!**`),
 			],
 		});
 	});

@@ -34,7 +34,8 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("I'm not playing anything."),
+						//.setDescription("I'm not playing anything."),
+						.setDescription("No estoy reproduciendo nada."),
 				],
 				ephemeral: true,
 			});
@@ -49,7 +50,8 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription(`Replay [${ song.title }](${ song.uri })`),
+					//.setDescription(`Replay [${ song.title }](${ song.uri })`),
+					.setDescription(`Repetición [${ song.title }](${ song.uri })`),
 			],
 		});
 	});

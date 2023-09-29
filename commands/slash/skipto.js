@@ -59,7 +59,7 @@ const command = new SlashCommand()
 			if (!position || position < 0 || position > player.queue.size) {
 				let thing = new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription("❌ | ¡Posición invalida!");
+					.setDescription("❌ | ¡Posición inválida!");
 				return interaction.editReply({ embeds: [thing] });
 			}
 			
@@ -68,7 +68,7 @@ const command = new SlashCommand()
 			
 			let thing = new MessageEmbed()
 				.setColor(client.config.embedColor)
-				.setDescription("✅ | Posicion saltada " + position);
+				.setDescription("✅ | Posición saltada " + position);
 			
 			return interaction.editReply({ embeds: [thing] });
 		} catch {
@@ -79,7 +79,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor(client.config.embedColor)
-						.setDescription("✅ | Posicion saltada " + position),
+						.setDescription("✅ | Posición saltada " + position),
 				],
 			});
 		}

@@ -34,7 +34,8 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("There is no song playing right now."),
+						//.setDescription("There is no song playing right now."),
+						.setDescription("No hay ninguna canción sonando en este momento."),
 				],
 				ephemeral: true,
 			});
@@ -45,7 +46,8 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("Current track is already resumed"),
+						//.setDescription("Current track is already resumed"),
+						.setDescription("La pista actual ya se ha reanudado."),
 				],
 				ephemeral: true,
 			});
@@ -55,7 +57,8 @@ const command = new SlashCommand()
 			embeds: [
 				new MessageEmbed()
 					.setColor(client.config.embedColor)
-					.setDescription(`⏯ **Resumed!**`),
+					//.setDescription(`⏯ **Resumed!**`),
+					.setDescription(`⏯ **¡Reanudado!**`),
 			],
 		});
 	});

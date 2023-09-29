@@ -64,7 +64,8 @@ const command = new SlashCommand()
 			new MessageEmbed()
 				.setColor(client.config.embedColor)
 				.setDescription(
-					`⏮ | Previous song: **${ previousSong.title }**`,
+					//`⏮ | Previous song: **${ previousSong.title }**`,
+					`⏮ | Canción anterior: **${ previousSong.title }**`,
 				),
 		],
 	});
