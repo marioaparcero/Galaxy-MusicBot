@@ -35,7 +35,7 @@ const command = new SlashCommand()
     let node = await client.getLavalink(client);
     if (!node) {
       return interaction.reply({
-        embeds: [client.ErrorEmbed("El nodo Lavalink no está conectado")],
+        embeds: [client.ErrorEmbed("El servidor de música no está conectado")],
       });
     }
 

@@ -36,7 +36,7 @@ const command = new SlashCommand()
 				embeds: [
 					new MessageEmbed()
 						.setColor("RED")
-						.setDescription("El nodo Lavalink no está conectado"),
+						.setDescription("El servidor de música no está conectado"),
 				],
 			});
 		}
