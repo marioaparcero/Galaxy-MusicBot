@@ -1,9 +1,9 @@
 const SlashCommand = require("../../lib/SlashCommand");
 const prettyMilliseconds = require("pretty-ms");
 const {
-  MessageEmbed,
-  MessageActionRow,
-  MessageSelectMenu,
+  EmbedBuilder,
+  ActionRowBuilder,
+  StringSelectMenuBuilder,
 } = require("discord.js");
 
 const command = new SlashCommand()
@@ -39,8 +39,8 @@ const command = new SlashCommand()
     } else {
       return interaction.reply({
         embeds: [
-          new MessageEmbed()
-            .setColor("RED")
+          new EmbedBuilder()
+            .setColor(0xff0000)
             .setDescription("El servidor de música no está conectado"),
         ],
       });
@@ -56,37 +56,37 @@ const command = new SlashCommand()
 
     try {
       res = await player.search(search, interaction.user);
-      if (res.loadType === "LOAD_FAILED") {
+      if (res.loadType === "error") {
         return interaction.reply({
           embeds: [
-            new MessageEmbed()
+            new EmbedBuilder()
               .setDescription("Se produjo un error al buscar la canción.")
-              .setColor("RED"),
+              .setColor(0xff0000),
           ],
-          ephemeral: true,
+          flags: 64,
         });
       }
     } catch (err) {
       return interaction.reply({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setAuthor({
               name: "Se produjo un error al buscar la canción.",
             })
-            .setColor("RED"),
+            .setColor(0xff0000),
         ],
-        ephemeral: true,
+        flags: 64,
       });
     }
 
-    if (res.loadType == "NO_MATCHES") {
+    if (res.loadType == "empty") {
       return interaction.reply({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setDescription(`No se encontraron resultados para \`${search}\``)
-            .setColor("RED"),
+            .setColor(0xff0000),
         ],
-        ephemeral: true,
+        flags: 64,
       });
     } else {
       let max = 10;
@@ -108,8 +108,8 @@ const command = new SlashCommand()
         });
       });
 
-      const menus = new MessageActionRow().addComponents(
-        new MessageSelectMenu()
+      const menus = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
           .setCustomId("select")
           .setPlaceholder("Selecciona una canción")
           .addOptions(resultFromSearch)
@@ -117,7 +117,7 @@ const command = new SlashCommand()
 
       let choosenTracks = await interaction.editReply({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setColor(client.config.embedColor)
             .setDescription(
               `Éstos son algunos de los resultados que encontré para \`${search}\`. Seleccione la pista dentro de \`30 segundos\``
@@ -148,7 +148,7 @@ const command = new SlashCommand()
           i.editReply({
             content: null,
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
               .setAuthor({ name: `Agregado a la cola`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) }) //client.config.iconURL
               //.setAuthor({ name: `Agregado a la cola por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
               // .setAuthor({
@@ -190,7 +190,7 @@ const command = new SlashCommand()
           choosenTracks.edit({
             content: null,
             embeds: [
-              new MessageEmbed()
+              new EmbedBuilder()
                 .setDescription(
                   `Ninguna pista seleccionada. Tardaste demasiado en seleccionar una pista.`
                 )

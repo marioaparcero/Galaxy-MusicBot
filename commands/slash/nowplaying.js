@@ -1,5 +1,5 @@
-const { MessageEmbed } = require("discord.js");
-const escapeMarkdown = require('discord.js').Util.escapeMarkdown;
+const { EmbedBuilder } = require("discord.js");
+const escapeMarkdown = require("discord.js").escapeMarkdown;
 const SlashCommand = require("../../lib/SlashCommand");
 const prettyMilliseconds = require("pretty-ms");
 
@@ -24,8 +24,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -34,22 +34,22 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El bot no está en un canal."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
 		if (!player.playing) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No hay nada reproduciendo."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
@@ -57,7 +57,7 @@ const command = new SlashCommand()
         var title = escapeMarkdown(song.title)
         var title = title.replace(/\]/g,"")
         var title = title.replace(/\[/g,"")
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(client.config.embedColor)
 			.setAuthor({ name: "Reproduciendo ahora ♪", iconURL: client.config.iconURL }) //Ahora suena ♪
 			// show who requested the song via setField, also show the duration of the song

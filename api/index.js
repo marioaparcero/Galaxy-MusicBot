@@ -71,6 +71,10 @@ class Server extends EventEmitter {
 	}
 	
 	initPassport() {
+		if (!this.config.clientId || !this.config.clientSecret) {
+			console.log("[SERVER] clientId o clientSecret no configurados en config.js, deshabilitando Dashboard Login.");
+			return;
+		}
 		this.app.use(passport.initialize());
 
 		const strategy = new DiscordStrategy(

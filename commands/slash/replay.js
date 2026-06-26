@@ -1,5 +1,5 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("replay")
@@ -22,8 +22,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -32,12 +32,12 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						//.setDescription("I'm not playing anything."),
 						.setDescription("No estoy reproduciendo nada."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
@@ -48,7 +48,7 @@ const command = new SlashCommand()
 		let song = player.queue.current;
 		return interaction.editReply({
 			embeds: [
-				new MessageEmbed()
+				new EmbedBuilder()
 					.setColor(client.config.embedColor)
 					//.setDescription(`Replay [${ song.title }](${ song.uri })`),
 					.setDescription(`Repetición [${ song.title }](${ song.uri })`),

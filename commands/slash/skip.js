@@ -1,5 +1,5 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("skip")
@@ -22,8 +22,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -32,11 +32,11 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No hay nada para saltar."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		} 
         	const song = player.queue.current;
@@ -44,19 +44,18 @@ const command = new SlashCommand()
                 if (player.queue[0] == undefined && (!autoQueue || autoQueue === false)) {
 		return interaction.reply({
 			embeds: [
-				new MessageEmbed()
-					.setColor("RED")
+				new EmbedBuilder()
+					.setColor(0xff0000)
 					//.setDescription(`No hay nada después de [${ song.title }](${ song.uri }) en la cola.`),
 					.setDescription(`La última canción de la lista es:\n [${ song.title }](${ song.uri })`),
 			],
 		})}
 		
-		player.queue.previous = player.queue.current;
 		player.stop();
 		
 		interaction.reply({
 			embeds: [
-				new MessageEmbed()
+				new EmbedBuilder()
 					.setColor(client.config.embedColor)
 					.setDescription("✅ | **¡Saltada!**"),
 			],

@@ -1,6 +1,6 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js"); // Routes, 
-const escapeMarkdown = require("discord.js").Util.escapeMarkdown;
+const { EmbedBuilder } = require("discord.js"); // Routes, 
+const escapeMarkdown = require("discord.js").escapeMarkdown;
 
 const command = new SlashCommand()
   .setName("play")
@@ -59,56 +59,58 @@ const command = new SlashCommand()
 
     const ret = await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setColor(client.config.embedColor)
           .setDescription(":mag_right: **Buscando...**"),
       ],
-      fetchReply: true,
+      withResponse: true,
     });
 
     let query = options.getString("query", true);
     let res = await player.search(query, interaction.user).catch((err) => { //`:musical_note: ${query}`
       client.error(err);
       return {
-        loadType: "LOAD_FAILED",
+        loadType: "error",
       };
     });
 
-    if (res.loadType === "LOAD_FAILED") {
+    if (res.loadType === "error") {
       if (!player.queue.current) {
         player.destroy();
       }
       await interaction
         .editReply({
           embeds: [
-            new MessageEmbed()
-              .setColor("RED")
+            new EmbedBuilder()
+              .setColor(0xff0000)
               .setDescription("Hubo un error al buscar"),
           ],
         })
         .catch(this.warn);
     }
 
-    if (res.loadType === "NO_MATCHES") {
+    if (res.loadType === "empty") {
       if (!player.queue.current) {
         player.destroy();
       }
       await interaction
         .editReply({
           embeds: [
-            new MessageEmbed()
-              .setColor("RED")
+            new EmbedBuilder()
+              .setColor(0xff0000)
               .setDescription("No se encontraron resultados"),
           ],
         })
         .catch(this.warn);
     }
 
-    if (res.loadType === "TRACK_LOADED" || res.loadType === "SEARCH_RESULT") {
+    if (res.loadType === "track" || res.loadType === "search") {
       player.queue.add(res.tracks[0]);
+      client.warn(`[DEBUG] Track added to queue. Queue length: ${player.queue.length}. Playing: ${player.playing}. Paused: ${player.paused}`);
 
-      if (!player.playing && !player.paused && !player.queue.size) {
-        player.play();
+      if (!player.playing && !player.paused && !player.queue.length) {
+        client.warn(`[DEBUG] Llamando a player.play()...`);
+        player.play().then(() => client.warn(`[DEBUG] player.play() promesa resuelta.`)).catch(e => client.error(`[DEBUG] player.play() ERROR: ${e}`));
       }
       var title = escapeMarkdown(res.tracks[0].title);
       var title = title.replace(/\]/g, "");
@@ -136,7 +138,7 @@ const command = new SlashCommand()
       //   client.error(err);
       // }
 
-      let addQueueEmbed = new MessageEmbed()
+      let addQueueEmbed = new EmbedBuilder()
         .setColor(client.config.embedColor)
         .setAuthor({ name: `Agregado a la cola`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) }) //client.config.iconURL
         //.setAuthor({ name: `Agregado a la cola por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
@@ -174,31 +176,29 @@ const command = new SlashCommand()
         addQueueEmbed.setThumbnail(res.tracks[0].thumbnail);
       }
 
-      if (player.queue.totalSize > 1) {
+      if ((player.queue.length + (player.queue.current ? 1 : 0)) > 1) {
         addQueueEmbed.addFields({
           name: "Posición en cola",
-          value: `${player.queue.size}`,
+          value: `${player.queue.length}`,
           inline: true,
         });
-      } else {
-        player.queue.previous = player.queue.current;
       }
 
       await interaction.editReply({ embeds: [addQueueEmbed] }).catch(this.warn);
     }
 
-    if (res.loadType === "PLAYLIST_LOADED") {
+    if (res.loadType === "playlist") {
       player.queue.add(res.tracks);
 
       if (
         !player.playing &&
         !player.paused &&
-        player.queue.totalSize === res.tracks.length
+        (player.queue.length + (player.queue.current ? 1 : 0)) === res.tracks.length
       ) {
         player.play();
       }
 
-      let playlistEmbed = new MessageEmbed()
+      let playlistEmbed = new EmbedBuilder()
         .setColor(client.config.embedColor)
         .setAuthor({
           name: "Lista de reproducción agregada a la cola",
@@ -225,7 +225,7 @@ const command = new SlashCommand()
       await interaction.editReply({ embeds: [playlistEmbed] }).catch(this.warn);
     }
 
-    if (ret) setTimeout(() => ret.delete().catch(this.warn), 20000);
+    if (ret) setTimeout(() => interaction.deleteReply().catch((e) => {}), 20000);
     return ret;
   });
 

@@ -1,6 +1,6 @@
-const { ContextMenuCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed } = require("discord.js");
-const escapeMarkdown = require("discord.js").Util.escapeMarkdown;
+const { ContextMenuCommandBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
+const escapeMarkdown = require("discord.js").escapeMarkdown;
 
 module.exports = {
   command: new ContextMenuCommandBuilder().setName("Play Song").setType(3),
@@ -43,11 +43,11 @@ module.exports = {
 
     const ret = await interaction.reply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setColor(client.config.embedColor)
           .setDescription(":mag_right: **Buscando...**"),
       ],
-      fetchReply: true,
+      withResponse: true,
     });
 
     const query =
@@ -56,50 +56,50 @@ module.exports = {
     let res = await player.search(query, interaction.user).catch((err) => {
       client.error(err);
       return {
-        loadType: "LOAD_FAILED",
+        loadType: "error",
       };
     });
 
-    if (res.loadType === "LOAD_FAILED") {
+    if (res.loadType === "error") {
       if (!player.queue.current) {
         player.destroy();
       }
       await interaction
         .editReply({
           embeds: [
-            new MessageEmbed()
-              .setColor("RED")
+            new EmbedBuilder()
+              .setColor(0xff0000)
               .setDescription("Hubo un error al buscar"),
           ],
         })
         .catch(this.warn);
     }
 
-    if (res.loadType === "NO_MATCHES") {
+    if (res.loadType === "empty") {
       if (!player.queue.current) {
         player.destroy();
       }
       await interaction
         .editReply({
           embeds: [
-            new MessageEmbed()
-              .setColor("RED")
+            new EmbedBuilder()
+              .setColor(0xff0000)
               .setDescription("No se encontraron resultados"),
           ],
         })
         .catch(this.warn);
     }
 
-    if (res.loadType === "TRACK_LOADED" || res.loadType === "SEARCH_RESULT") {
+    if (res.loadType === "track" || res.loadType === "search") {
       player.queue.add(res.tracks[0]);
 
-      if (!player.playing && !player.paused && !player.queue.size) {
+      if (!player.playing && !player.paused && !player.queue.length) {
         player.play();
       }
       var title = escapeMarkdown(res.tracks[0].title);
       var title = title.replace(/\]/g, "");
       var title = title.replace(/\[/g, "");
-      let addQueueEmbed = new MessageEmbed()
+      let addQueueEmbed = new EmbedBuilder()
         .setColor(client.config.embedColor)
         .setAuthor({ name: `Agregado a la cola`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) }) //client.config.iconURL
         //.setAuthor({ name: "Agregado a la cola", iconURL: client.config.iconURL })
@@ -134,31 +134,29 @@ module.exports = {
         addQueueEmbed.setThumbnail(res.tracks[0].thumbnail);
       }
 
-      if (player.queue.totalSize > 1) {
+      if ((player.queue.length + (player.queue.current ? 1 : 0)) > 1) {
         addQueueEmbed.addFields({
           name: "Posición en cola",
-          value: `${player.queue.size}`,
+          value: `${player.queue.length}`,
           inline: true,
         });
-      } else {
-        player.queue.previous = player.queue.current;
       }
 
       await interaction.editReply({ embeds: [addQueueEmbed] }).catch(this.warn);
     }
 
-    if (res.loadType === "PLAYLIST_LOADED") {
+    if (res.loadType === "playlist") {
       player.queue.add(res.tracks);
 
       if (
         !player.playing &&
         !player.paused &&
-        player.queue.totalSize === res.tracks.length
+        (player.queue.length + (player.queue.current ? 1 : 0)) === res.tracks.length
       ) {
         player.play();
       }
 
-      let playlistEmbed = new MessageEmbed()
+      let playlistEmbed = new EmbedBuilder()
         .setColor(client.config.embedColor)
         .setAuthor({
           name: "Lista de reproducción agregada a la cola",
@@ -185,7 +183,7 @@ module.exports = {
       await interaction.editReply({ embeds: [playlistEmbed] }).catch(this.warn);
     }
 
-    if (ret) setTimeout(() => ret.delete().catch(this.warn), 20000);
+    if (ret) setTimeout(() => interaction.deleteReply().catch((e) => {}), 20000);
     return ret;
   },
 };

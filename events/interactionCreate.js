@@ -7,7 +7,7 @@ const yt = require("youtube-sr").default;
  * @param {import("discord.js").Interaction}interaction
  */
 module.exports = async (client, interaction) => {
-    if (interaction.isCommand()) {
+    if (interaction.isChatInputCommand()) {
         let command = client.slashCommands.find(
             (x) => x.name == interaction.commandName,
         );
@@ -21,7 +21,7 @@ module.exports = async (client, interaction) => {
         return;
     }
 
-    if (interaction.isContextMenu()) {
+    if (interaction.isContextMenuCommand()) {
         let command = client.contextCommands.find(
             (x) => x.command.name == interaction.commandName,
         );
@@ -70,9 +70,8 @@ module.exports = async (client, interaction) => {
             let choice = []
             await yt.search(url || Random, { safeSearch: false, limit: 25 }).then(result => {
                 result.forEach(x => { choice.push({ name: x.title, value: x.url }) })
-            });
+            }).catch(e => { /* Ignorar errores de autocompletado de youtube-sr */ });
             return await interaction.respond(choice).catch(() => { });
-        } else if (result.loadType === "LOAD_FAILED" || "NO_MATCHES")
-            return;
+        }
     }
 };

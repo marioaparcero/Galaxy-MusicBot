@@ -1,5 +1,5 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("remove")
@@ -37,8 +37,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -47,22 +47,22 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No hay canciones para eliminar."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
 		await interaction.deferReply();
 		
 		const position = Number(args) - 1;
-		if (position > player.queue.size) {
-			let thing = new MessageEmbed()
+		if (position > player.queue.length) {
+			let thing = new EmbedBuilder()
 				.setColor(client.config.embedColor)
 				.setDescription(
-					`La cola actual tiene solo **${ player.queue.size }** pistas.`,
+					`La cola actual tiene solo **${ player.queue.length }** pistas.`,
 				);
 			return interaction.editReply({ embeds: [thing] });
 		}
@@ -71,7 +71,7 @@ const command = new SlashCommand()
 		player.queue.remove(position);
 		
 		const number = position + 1;
-		let removeEmbed = new MessageEmbed()
+		let removeEmbed = new EmbedBuilder()
 			.setColor(client.config.embedColor)
 			.setDescription(`Se eliminó la pista número **${ number }** de la cola.`);
 		return interaction.editReply({ embeds: [removeEmbed] });

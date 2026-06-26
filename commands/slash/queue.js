@@ -1,6 +1,6 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
-const escapeMarkdown = require('discord.js').Util.escapeMarkdown;
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require("discord.js");
+const escapeMarkdown = require("discord.js").escapeMarkdown;
 const load = require("lodash");
 const pms = require("pretty-ms");
 
@@ -26,8 +26,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -39,11 +39,11 @@ const command = new SlashCommand()
 			};
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription(locales[interaction.locale] ?? 'There are no songs in the queue.')
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
@@ -51,22 +51,22 @@ const command = new SlashCommand()
 			const locales = {
 				'es-ES': 'No hay nada reproduciendo.',
 			};
-			const queueEmbed = new MessageEmbed()
+			const queueEmbed = new EmbedBuilder()
 				.setColor(client.config.embedColor)
 				.setDescription(locales[interaction.locale] ?? "There's nothing playing.");
-			return interaction.reply({ embeds: [queueEmbed], ephemeral: true });
+			return interaction.reply({ embeds: [queueEmbed], flags: 64 });
 		}
 		
 		await interaction.deferReply().catch(() => {
 		});
         
 		
-		if (!player.queue.size || player.queue.size === 0) {
+		if (!player.queue.length || player.queue.length === 0) {
             let song = player.queue.current;
             var title = escapeMarkdown(song.title)
             var title = title.replace(/\]/g,"")
             var title = title.replace(/\[/g,"")
-			const queueEmbed = new MessageEmbed()
+			const queueEmbed = new EmbedBuilder()
 				.setColor(client.config.embedColor)
 				.setDescription(`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri })`)
 				.addFields(
@@ -87,7 +87,7 @@ const command = new SlashCommand()
 					},
 					{
 						name: "Total de pistas",
-						value: `\`${ player.queue.totalSize - 1 }\``,
+						value: `\`${ (player.queue.length + (player.queue.current ? 1 : 0)) - 1 }\``,
 						colonNotation: true,
 						inline: true,
 					},
@@ -127,12 +127,12 @@ const command = new SlashCommand()
 				page = 0;
 			}
 			
-			if (player.queue.size < 11 || player.queue.totalSize < 11) {
+			if (player.queue.length < 11 || (player.queue.length + (player.queue.current ? 1 : 0)) < 11) {
                 let song = player.queue.current;
                 var title = escapeMarkdown(song.title)
                 var title = title.replace(/\]/g,"")
                 var title = title.replace(/\[/g,"")
-				const embedTwo = new MessageEmbed()
+				const embedTwo = new EmbedBuilder()
 					.setColor(client.config.embedColor)
 					.setDescription(
 						`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
@@ -157,7 +157,7 @@ const command = new SlashCommand()
 						},
 						{
 							name: "Total de pistas",
-							value: `\`${ player.queue.totalSize - 1 }\``,
+							value: `\`${ (player.queue.length + (player.queue.current ? 1 : 0)) - 1 }\``,
 							colonNotation: true,
 							inline: true,
 						},
@@ -177,7 +177,7 @@ const command = new SlashCommand()
                 var title = escapeMarkdown(song.title)
                 var title = title.replace(/\]/g,"")
                 var title = title.replace(/\[/g,"")
-				const embedThree = new MessageEmbed()
+				const embedThree = new EmbedBuilder()
 					.setColor(client.config.embedColor)
 					.setDescription(
 						`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
@@ -202,7 +202,7 @@ const command = new SlashCommand()
 						},
 						{
 							name: "Total de pistas",
-							value: `\`${ player.queue.totalSize - 1 }\``,
+							value: `\`${ (player.queue.length + (player.queue.current ? 1 : 0)) - 1 }\``,
 							colonNotation: true,
 							inline: true,
 						},
@@ -211,20 +211,20 @@ const command = new SlashCommand()
 						text: `Página ${ page + 1 }/${ pages.length }`,
 					});
 				
-				const buttonOne = new MessageButton()
+				const buttonOne = new ButtonBuilder()
 					.setCustomId("queue_cmd_but_1_app")
 					.setEmoji("⏭️")
-					.setStyle("PRIMARY");
-				const buttonTwo = new MessageButton()
+					.setStyle(1);
+				const buttonTwo = new ButtonBuilder()
 					.setCustomId("queue_cmd_but_2_app")
 					.setEmoji("⏮️")
-					.setStyle("PRIMARY");
+					.setStyle(1);
 				
 				await interaction
 					.editReply({
 						embeds: [embedThree],
 						components: [
-							new MessageActionRow().addComponents([buttonTwo, buttonOne]),
+							new ActionRowBuilder().addComponents([buttonTwo, buttonOne]),
 						],
 					})
 					.catch(() => {
@@ -238,7 +238,7 @@ const command = new SlashCommand()
 							return b
 								.reply({
 									content: `Solo **${ interaction.user.tag }** puede usar este botón.`,
-									ephemeral: true,
+									flags: 64,
 								})
 								.catch(() => {
 								});
@@ -257,7 +257,7 @@ const command = new SlashCommand()
                         var title = escapeMarkdown(song.title)
                         var title = title.replace(/\]/g,"")
                         var title = title.replace(/\[/g,"")
-						const embedFour = new MessageEmbed()
+						const embedFour = new EmbedBuilder()
 							.setColor(client.config.embedColor)
 							.setDescription(
 								`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
@@ -282,7 +282,7 @@ const command = new SlashCommand()
 								},
 								{
 									name: "Total de pistas",
-									value: `\`${ player.queue.totalSize - 1 }\``,
+									value: `\`${ (player.queue.length + (player.queue.current ? 1 : 0)) - 1 }\``,
 									colonNotation: true,
 									inline: true,
 								},
@@ -294,7 +294,7 @@ const command = new SlashCommand()
 						await interaction.editReply({
 							embeds: [embedFour],
 							components: [
-								new MessageActionRow().addComponents([buttonTwo, buttonOne]),
+								new ActionRowBuilder().addComponents([buttonTwo, buttonOne]),
 							],
 						});
 					} else if (button.customId === "queue_cmd_but_2_app") {
@@ -305,7 +305,7 @@ const command = new SlashCommand()
                         var title = escapeMarkdown(song.title)
                         var title = title.replace(/\]/g,"")
                         var title = title.replace(/\[/g,"")
-						const embedFive = new MessageEmbed()
+						const embedFive = new EmbedBuilder()
 							.setColor(client.config.embedColor)
 							.setDescription(
 								`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri }) [${ player.queue.current.requester }]\n\n**Pistas en cola**\n${ pages[page] }`,
@@ -330,7 +330,7 @@ const command = new SlashCommand()
 								},
 								{
 									name: "Total de pistas",
-									value: `\`${ player.queue.totalSize - 1 }\``,
+									value: `\`${ (player.queue.length + (player.queue.current ? 1 : 0)) - 1 }\``,
 									colonNotation: true,
 									inline: true,
 								},
@@ -343,7 +343,7 @@ const command = new SlashCommand()
 							.editReply({
 								embeds: [embedFive],
 								components: [
-									new MessageActionRow().addComponents([buttonTwo, buttonOne]),
+									new ActionRowBuilder().addComponents([buttonTwo, buttonOne]),
 								],
 							})
 							.catch(() => {

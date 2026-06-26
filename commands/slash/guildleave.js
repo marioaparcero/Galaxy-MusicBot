@@ -1,4 +1,4 @@
-const { MessageEmbed, message } = require("discord.js");
+const { EmbedBuilder, message } = require("discord.js");
 const SlashCommand = require("../../lib/SlashCommand");
 const fs = require("fs");
 const path = require("path");
@@ -33,31 +33,31 @@ const command = new SlashCommand()
 			    });
 			    const guild = client.guilds.cache.map(guild => ` ${guild.name} | ${guild.id}`);
 			    try{
-				return interaction.reply({content:`Guilds:\n\`${guild}\``, ephemeral: true});
+				return interaction.reply({content:`Guilds:\n\`${guild}\``, flags: 64});
 			    }catch{
-				return interaction.reply({content:`check console for list of guilds`, ephemeral: true});
+				return interaction.reply({content:`check console for list of guilds`, flags: 64});
 			    }
 			}
 
 			const guild = client.guilds.cache.get(id);
 
 			if(!guild){
-			    return interaction.reply({content: `\`${id}\` is not a valid guild id`, ephemeral:true});
+			    return interaction.reply({content: `\`${id}\` is not a valid guild id`, flags: 64});
 			}
 
 			await guild.leave().then(c => console.log(`left guild ${id}`)).catch((err) => {console.log(err)});
-			return interaction.reply({content:`left guild \`${id}\``, ephemeral: true});
+			return interaction.reply({content:`left guild \`${id}\``, flags: 64});
 		    }catch (error){
 			console.log(`there was an error trying to leave guild ${id}`, error);
 		    }
 		}else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
+					new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setDescription("¡No estás autorizado a utilizar este comando!"),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 	});

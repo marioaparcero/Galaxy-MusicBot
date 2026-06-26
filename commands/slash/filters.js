@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
@@ -50,8 +50,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -60,16 +60,16 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No se está reproduciendo música."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
 		// create a new embed
-		let filtersEmbed = new MessageEmbed().setColor(client.config.embedColor);
+		let filtersEmbed = new EmbedBuilder().setColor(client.config.embedColor);
 		
 		if (args == "nightcore") {
 			filtersEmbed.setDescription("✅ | ¡El filtro Nigthcore ya está activado!");

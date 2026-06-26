@@ -1,9 +1,9 @@
 const SlashCommand = require("../../lib/SlashCommand");
 const {
-	MessageActionRow,
-	MessageSelectMenu,
-	MessageButton,
-	MessageEmbed
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	ButtonBuilder,
+	EmbedBuilder
 } = require("discord.js");
 const { Rlyrics } = require("rlyrics");
 const lyricsApi = new Rlyrics();
@@ -32,7 +32,7 @@ const command = new SlashCommand()
 	.setRun(async (client, interaction, options) => {
 		await interaction.reply({
 			embeds: [
-				new MessageEmbed()
+				new EmbedBuilder()
 					.setColor(client.config.embedColor)
 					.setDescription("🔎 | **Buscando...**"),
 			],
@@ -44,8 +44,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.editReply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -55,8 +55,8 @@ const command = new SlashCommand()
 		if (!args && !player) {
 			return interaction.editReply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No hay nada reproduciendo"),
 				],
 			});
@@ -91,8 +91,8 @@ const command = new SlashCommand()
 					} else { break }
 				}
 
-				const menu = new MessageActionRow().addComponents(
-					new MessageSelectMenu()
+				const menu = new ActionRowBuilder().addComponents(
+					new StringSelectMenuBuilder()
 						.setCustomId("choose-lyrics")
 						.setPlaceholder("Elige una canción")
 						.addOptions(lyricsResults),
@@ -100,7 +100,7 @@ const command = new SlashCommand()
 
 				let selectedLyrics = await interaction.editReply({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setColor(client.config.embedColor)
 							.setDescription(
 								`Éstos son algunos de los resultados que encontré para \`${query}\`. Elija una canción para mostrar la letra en \`30 segundos\`.`
@@ -116,28 +116,28 @@ const command = new SlashCommand()
 				});
 
 				collector.on("collect", async (interaction) => {
-					if (interaction.isSelectMenu()) {
+					if (interaction.isStringSelectMenu()) {
 						await interaction.deferUpdate();
 						const url = lyricsData[parseInt(interaction.values[0])].url;
 
 						lyricsApi.find(url).then((lyrics) => {
 							let lyricsText = lyrics.lyrics;
 
-							const button = new MessageActionRow()
+							const button = new ActionRowBuilder()
 								.addComponents(
-									new MessageButton()
+									new ButtonBuilder()
 										.setCustomId('tipsbutton')
 										.setLabel('Consejos')
 										.setEmoji(`📌`)
 										.setStyle('SECONDARY'),
-									new MessageButton()
+									new ButtonBuilder()
 										.setLabel('Fuente')
 										.setURL(url)
 										.setStyle('LINK'),
 								);
 
 							const musixmatch_icon = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Musixmatch_logo_icon_only.svg/480px-Musixmatch_logo_icon_only.svg.png';
-							let lyricsEmbed = new MessageEmbed()
+							let lyricsEmbed = new EmbedBuilder()
 								.setColor(client.config.embedColor)
 								.setTitle(`${lyrics.name}`)
 								.setURL(url)
@@ -177,7 +177,7 @@ const command = new SlashCommand()
 						selectedLyrics.edit({
 							content: null,
 							embeds: [
-								new MessageEmbed()
+								new EmbedBuilder()
 									.setDescription(
 										`No hay ninguna canción seleccionada. Tardaste demasiado en seleccionar una pista.`
 									)
@@ -188,9 +188,9 @@ const command = new SlashCommand()
 				});
 
 			} else {
-				const button = new MessageActionRow()
+				const button = new ActionRowBuilder()
 					.addComponents(
-						new MessageButton()
+						new ButtonBuilder()
 							.setEmoji(`📌`)
 							.setCustomId('tipsbutton')
 							.setLabel('Tips')
@@ -198,8 +198,8 @@ const command = new SlashCommand()
 					);
 				return interaction.editReply({
 					embeds: [
-						new MessageEmbed()
-							.setColor("RED")
+						new EmbedBuilder()
+							.setColor(0xff0000)
 							.setDescription(
 								`No se encontraron resultados para \`${query}\`!\nAsegúrate de haber escrito tu búsqueda correctamente.`,
 							),
@@ -210,8 +210,8 @@ const command = new SlashCommand()
 			console.error(err);
 			return interaction.editReply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription(
 							`Ha ocurrido un error desconocido, verifique su consola.`,
 						),
@@ -228,13 +228,13 @@ const command = new SlashCommand()
 				await interaction.deferUpdate();
 				await interaction.followUp({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setTitle(`Consejos de letras`)
 							.setColor(client.config.embedColor)
 							.setDescription(
 								`Aquí tienes algunos consejos para conseguir la letra de tu canción correctamente. \n\n- 1. Intente agregar el nombre del artista delante del nombre de la canción.\n- 2. Intente buscar la letra manualmente proporcionando la consulta de la canción usando su teclado.\n- 3. Evite buscar letras en otros idiomas además del inglés.`,
 							),
-					], ephemeral: true, components: []
+					], flags: 64, components: []
 				});
 			};
 		});

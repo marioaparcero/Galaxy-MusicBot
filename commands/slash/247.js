@@ -1,5 +1,5 @@
 const colors = require("colors");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const SlashCommand = require("../../lib/SlashCommand");
 
 const command = new SlashCommand()
@@ -20,8 +20,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -30,15 +30,15 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No hay nada para jugar las 24 horas del día, los 7 días de la semana."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
-		let twentyFourSevenEmbed = new MessageEmbed().setColor(
+		let twentyFourSevenEmbed = new EmbedBuilder().setColor(
 			client.config.embedColor,
 		);
 		const twentyFourSeven = player.get("twentyFourSeven");
@@ -54,18 +54,18 @@ const command = new SlashCommand()
 		    text: `El bot ${!twentyFourSeven ? "permanecerá" : "ya no permanecerá"} conectado al canal de voz las 24 horas del día, los 7 días de la semana.`
       });
 		client.warn(
-			`Reproductor: ${ player.options.guild } | [${ colors.blue(
+			`Reproductor: ${ player.options.guildId } | [${ colors.blue(
 				"24/7",
 			) }] has been [${ colors.blue(
 				!twentyFourSeven? "ENABLED" : "DISABLED",
 			) }] in ${
-				client.guilds.cache.get(player.options.guild)
-					? client.guilds.cache.get(player.options.guild).name
+				client.guilds.cache.get(player.options.guildId)
+					? client.guilds.cache.get(player.options.guildId).name
 					: "un servidor"
 			}`,
 		);
 		
-		if (!player.playing && player.queue.totalSize === 0 && twentyFourSeven) {
+		if (!player.playing && (player.queue.length + (player.queue.current ? 1 : 0)) === 0 && twentyFourSeven) {
 			player.destroy();
 		}
 		

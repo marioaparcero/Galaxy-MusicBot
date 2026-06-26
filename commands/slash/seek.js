@@ -1,5 +1,5 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const ms = require("ms");
 
 const command = new SlashCommand()
@@ -35,8 +35,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -45,11 +45,11 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No hay música reproduciéndose."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
@@ -69,7 +69,7 @@ const command = new SlashCommand()
 			player.seek(time);
 			return interaction.editReply({
 				embeds: [
-					new MessageEmbed()
+					new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setDescription(
 							`⏩ | **${ player.queue.current.title }** ha sido ${
@@ -81,7 +81,7 @@ const command = new SlashCommand()
 		} else {
 			return interaction.editReply({
 				embeds: [
-					new MessageEmbed()
+					new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setDescription(
 							`No se puede buscar la pista que se está reproduciendo actualmente. Esto puede deberse a que se ha excedido la duración de la pista o a un formato de hora incorrecto. Por favor revisa e intenta de nuevo`,

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /**
  *
@@ -8,9 +8,11 @@ const { MessageEmbed } = require("discord.js");
  * @returns {Promise<void>}
  */
 module.exports = async (client, oldState, newState) => {
+	if (!client.manager) return;
+	
 	// get guild and player
 	let guildId = newState.guild.id;
-	const player = client.manager.get(guildId);
+	const player = client.manager.players.get(guildId);
 	
 	// check if the bot is active (playing, paused or empty does not matter (return otherwise)
 	if (!player || player.state !== "CONNECTED") {
@@ -48,10 +50,10 @@ module.exports = async (client, oldState, newState) => {
 	}
 	// move check first as it changes type
 	if (stateChange.type === "MOVE") {
-		if (oldState.channel.id === player.voiceChannel) {
+		if (oldState.channel.id === player.options.voiceChannelId) {
 			stateChange.type = "LEAVE";
 		}
-		if (newState.channel.id === player.voiceChannel) {
+		if (newState.channel.id === player.options.voiceChannelId) {
 			stateChange.type = "JOIN";
 		}
 	}
@@ -64,7 +66,7 @@ module.exports = async (client, oldState, newState) => {
 	}
 	
 	// check if the bot's voice channel is involved (return otherwise)
-	if (!stateChange.channel || stateChange.channel.id !== player.voiceChannel) {
+	if (!stateChange.channel || stateChange.channel.id !== player.options.voiceChannelId) {
 		return;
 	}
         player.prevMembers = player.members
@@ -75,7 +77,7 @@ module.exports = async (client, oldState, newState) => {
                          var members = stateChange.channel.members.filter(member => !member.user.bot).size
 		            if (members === 1 && player.paused && members !== player.prevMembers){
 					player.pause(false);
-					let playerResumed = new MessageEmbed()
+					let playerResumed = new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setTitle(`¡Reanudado!`, client.config.iconURL)
 						.setDescription(
@@ -84,7 +86,7 @@ module.exports = async (client, oldState, newState) => {
 						.setFooter({ text: `La canción actual ha sido reanudada.` });
 					
 					let resumeMessage = await client.channels.cache
-						.get(player.textChannel)
+						.get(player.options.textChannelId)
 						.send({ embeds: [playerResumed] });
 					player.setResumeMessage(client, resumeMessage);
 					
@@ -104,7 +106,7 @@ module.exports = async (client, oldState, newState) => {
 				if (members === 0 && !player.paused && player.playing) {
 					player.pause(true);
 					
-					let playerPaused = new MessageEmbed()
+					let playerPaused = new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setTitle(`¡Pausado!`, client.config.iconURL)
 						.setFooter({
@@ -113,7 +115,7 @@ module.exports = async (client, oldState, newState) => {
 						});
 					
 					let pausedMessage = await client.channels.cache
-						.get(player.textChannel)
+						.get(player.options.textChannelId)
 						.send({ embeds: [playerPaused] });
 					player.setPausedMessage(client, pausedMessage);
 				}
@@ -123,7 +125,7 @@ module.exports = async (client, oldState, newState) => {
 						setTimeout(async () => {
 							var members = stateChange.channel.members.filter(member => !member.user.bot).size
 							if (members === 0 && player.state !== 'DISCONNECTED'){
-								let leftEmbed = new MessageEmbed()
+								let leftEmbed = new EmbedBuilder()
 									.setColor(client.config.embedColor)
 									.setAuthor({
 									name: "¡Desconectado!",
@@ -133,7 +135,7 @@ module.exports = async (client, oldState, newState) => {
 									.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 									.setTimestamp();
 								let Disconnected = await client.channels.cache
-									.get(player.textChannel)
+									.get(player.options.textChannelId)
 									.send({ embeds: [leftEmbed] });
 								setTimeout(() => Disconnected.delete(true), 5000);
 								player.queue.clear();
@@ -142,7 +144,7 @@ module.exports = async (client, oldState, newState) => {
 							}
 						}, client.config.disconnectTime);
 					} else{
-						let leftEmbed = new MessageEmbed()
+						let leftEmbed = new EmbedBuilder()
 							.setColor(client.config.embedColor)
 							.setAuthor({
 							name: "¡Desconectado!",
@@ -152,7 +154,7 @@ module.exports = async (client, oldState, newState) => {
 							.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 							.setTimestamp();
 						let Disconnected = await client.channels.cache
-							.get(player.textChannel)
+							.get(player.options.textChannelId)
 							.send({ embeds: [leftEmbed] });
 						setTimeout(() => Disconnected.delete(true), 5000);
 						player.destroy();	
@@ -163,7 +165,7 @@ module.exports = async (client, oldState, newState) => {
 				if (members === 0 && !player.paused && player.playing && twentyFourSeven) {
 					player.pause(true);
 					
-					let playerPaused = new MessageEmbed()
+					let playerPaused = new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setTitle(`¡Pausado!`, client.config.iconURL)
 						.setFooter({
@@ -172,13 +174,13 @@ module.exports = async (client, oldState, newState) => {
 						});
 					
 					let pausedMessage = await client.channels.cache
-						.get(player.textChannel)
+						.get(player.options.textChannelId)
 						.send({ embeds: [playerPaused] });
 					player.setPausedMessage(client, pausedMessage);
 					setTimeout(async () => {
 						var members = stateChange.channel.members.filter(member => !member.user.bot).size
 						if (members === 0 && player.state !== 'DISCONNECTED'){
-							let leftEmbed = new MessageEmbed()
+							let leftEmbed = new EmbedBuilder()
 								.setColor(client.config.embedColor)
 								.setAuthor({
 								name: "¡Desconectado!",
@@ -188,7 +190,7 @@ module.exports = async (client, oldState, newState) => {
 								.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 								.setTimestamp();
 							let Disconnected = await client.channels.cache
-								.get(player.textChannel)
+								.get(player.options.textChannelId)
 								.send({ embeds: [leftEmbed] });
 							setTimeout(() => Disconnected.delete(true), 5000);
 							pausedMessage.delete(true);
@@ -199,7 +201,7 @@ module.exports = async (client, oldState, newState) => {
 					}, client.config.disconnectTime);
 				}else{
 					if (members === 0 && player.state !== 'DISCONNECTED'){
-						let leftEmbed = new MessageEmbed()
+						let leftEmbed = new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setAuthor({
 						name: "¡Desconectado!", //Disconnected!
@@ -209,7 +211,7 @@ module.exports = async (client, oldState, newState) => {
 						.setFooter({ text: "El bot se desconectó porque no había nadie en el canal de voz." })
 						.setTimestamp();
 						let Disconnected = await client.channels.cache
-							.get(player.textChannel)
+							.get(player.options.textChannelId)
 							.send({ embeds: [leftEmbed] });
 						setTimeout(() => Disconnected.delete(true), 5000);
 						player.destroy();

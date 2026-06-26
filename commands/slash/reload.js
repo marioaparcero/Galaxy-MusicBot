@@ -1,4 +1,4 @@
-const { MessageEmbed, message } = require("discord.js");
+const { EmbedBuilder, message } = require("discord.js");
 const SlashCommand = require("../../lib/SlashCommand");
 const fs = require("fs");
 const path = require("path");
@@ -57,7 +57,7 @@ const command = new SlashCommand()
 				client.log(`¡${ totalCmds } comandos recargados!`);
 				return interaction.reply({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setColor(client.config.embedColor)
 							.setDescription(`¡\`${ totalCmds }\` comandos recargados con éxito!`)
 							.setFooter({
@@ -65,29 +65,29 @@ const command = new SlashCommand()
 							})
 							.setTimestamp(),
 					],
-					ephemeral: true,
+					flags: 64,
 				});
 			} catch (err) {
 				console.log(err);
 				return interaction.reply({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setColor(client.config.embedColor)
 							.setDescription(
 								"Ha ocurrido un error. Para obtener más detalles, consulte la consola.",
 							),
 					],
-					ephemeral: true,
+					flags: 64,
 				});
 			}
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
+					new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setDescription("¡No estás autorizado a utilizar este comando!"),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 	});

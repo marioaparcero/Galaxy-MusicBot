@@ -1,5 +1,5 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const command = new SlashCommand()
 	.setName("saltar")
@@ -33,8 +33,8 @@ const command = new SlashCommand()
 		} else {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("El servidor de música no está conectado"),
 				],
 			});
@@ -43,11 +43,11 @@ const command = new SlashCommand()
 		if (!player) {
 			return interaction.reply({
 				embeds: [
-					new MessageEmbed()
-						.setColor("RED")
+					new EmbedBuilder()
+						.setColor(0xff0000)
 						.setDescription("No estoy en un canal."),
 				],
-				ephemeral: true,
+				flags: 64,
 			});
 		}
 		
@@ -56,8 +56,8 @@ const command = new SlashCommand()
 		const position = Number(args);
 		
 		try {
-			if (!position || position < 0 || position > player.queue.size) {
-				let thing = new MessageEmbed()
+			if (!position || position < 0 || position > player.queue.length) {
+				let thing = new EmbedBuilder()
 					.setColor(client.config.embedColor)
 					.setDescription("❌ | ¡Posición inválida!");
 				return interaction.editReply({ embeds: [thing] });
@@ -66,7 +66,7 @@ const command = new SlashCommand()
 			player.queue.remove(0, position - 1);
 			player.stop();
 			
-			let thing = new MessageEmbed()
+			let thing = new EmbedBuilder()
 				.setColor(client.config.embedColor)
 				.setDescription("✅ | Posición saltada " + position);
 			
@@ -77,7 +77,7 @@ const command = new SlashCommand()
 			}
 			return interaction.editReply({
 				embeds: [
-					new MessageEmbed()
+					new EmbedBuilder()
 						.setColor(client.config.embedColor)
 						.setDescription("✅ | Posición saltada " + position),
 				],

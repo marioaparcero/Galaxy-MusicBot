@@ -1,6 +1,6 @@
 //Deletes every commands from every server yikes!!1!!11!!
 const readline = require("readline");
-const { REST } = require("@discordjs/rest");
+const { REST } = require("discord.js");
 const { Routes } = require("discord-api-types/v9");
 const getConfig = require("../util/getConfig");
 
