@@ -1,11 +1,53 @@
+const profiles = {
+	lucio: {
+		token: process.env.LUCIO_TOKEN || "", 
+		clientId: process.env.LUCIO_CLIENT_ID || "",
+		clientSecret: process.env.LUCIO_CLIENT_SECRET || "",
+		iconURL: "https://comunidadoverwatch.com/wp-content/uploads/2023/09/lucio-disco1.gif",
+		port: 4200,
+	},
+	dva: {
+		token: process.env.DVA_TOKEN || "",
+		clientId: process.env.DVA_CLIENT_ID || "",
+		clientSecret: process.env.DVA_CLIENT_SECRET || "",
+		iconURL: "https://comunidadoverwatch.com/wp-content/uploads/2023/09/dva7.gif",
+		port: 4201,
+	},
+	jetpackcat: {
+		token: process.env.JETPACKCAT_TOKEN || "",
+		clientId: process.env.JETPACKCAT_CLIENT_ID || "",
+		clientSecret: process.env.JETPACKCAT_CLIENT_SECRET || "",
+		iconURL: "https://comunidadoverwatch.com/wp-content/uploads/2023/09/jetpackcat.gif",
+		port: 4202,
+	}
+};
+
+// Lee la variable de entorno BOT_PROFILE (usada por PM2 o Docker), o usa "lucio" por defecto
+const profileName = process.env.BOT_PROFILE || "lucio";
+const activeProfile = profiles[profileName.toLowerCase()] || profiles.lucio;
+// BOT_PROFILE=lucio pm2 start index.js --name "LucioBot"
+// BOT_PROFILE=dva pm2 start index.js --name "DvaBot"
+// BOT_PROFILE=jetpackcat pm2 start index.js --name "JetpackCatBot"
+
 module.exports = {
+	// ===============================
+	// CONFIGURACIÓN ACTIVA DEL BOT
+	// ===============================
+	activeProfileName: profileName.toLowerCase(),
+	token: activeProfile.token,
+	clientId: activeProfile.clientId,
+	clientSecret: activeProfile.clientSecret,
+	iconURL: activeProfile.iconURL,
+	port: activeProfile.port,
+
+	// ===============================
+	// CONFIGURACIÓN GENERAL
+	// ===============================
+	enableDashboard: false, //- Cambia esto a false si quieres desactivar el panel web para ahorrar RAM
+	
 	helpCmdPerPage: 10, //- Number of commands per page of help command
 	lyricsMaxResults: 5, //- Number of results for lyrics command (Do not touch this value if you don't know what you are doing)
-	adminId: "UserId", //- Replace UserId with the Discord ID of the admin of the bot
-	token: process.env.token || "", //- Bot's Token
-	clientId: process.env.clientId || "", //- ID of the bot
-	clientSecret: process.env.clientSecret || "", //- Client Secret of the bot
-	port: 4200, //- Port of the API and Dashboard
+	adminId: "649094110300602408", //- Replace UserId with the Discord ID of the admin of the bot
 	scopes: ["identify", "guilds", "applications.commands"], //- Discord OAuth2 Scopes
 	inviteScopes: ["bot", "applications.commands"], // Invite link scopes
 	serverDeafen: true, //- If you want bot to stay deafened
@@ -20,9 +62,8 @@ module.exports = {
 	autoLeave: false, //- When set to true, the bot will automatically leave when no one is in the voice channel (can be combined with 24/7 to always be in voice channel until everyone leaves; if 24/7 is on disconnectTime will add a disconnect delay after everyone leaves.)
 	debug: false, //- Debug mode
 	cookieSecret: "CodingWithSudhan is epic", //- Cookie Secret
-	website: "http://localhost:4200", //- without the / at the end
-	// You need a lavalink server for this bot to work!!!!
-	// Lavalink server; public lavalink -> https://lavalink-list.darrennathanael.com/; create one yourself -> https://darrennathanael.com/post/how-to-lavalink
+	website: "http://localhost:" + activeProfile.port, //- without the / at the end
+	
 	nodes: [
 		{
 			identifier: "Main Node", //- Used for indentifier in stats commands.
@@ -36,14 +77,12 @@ module.exports = {
 	],
 	embedColor: "#2f3136", //- Color of the embeds, hex supported
 	presence: {
-		// PresenceData object | https://discord.js.org/#/docs/main/stable/typedef/PresenceData
 		status: "online", //- You can have online, idle, dnd and invisible (Note: invisible makes people think the bot is offline)
 		activities: [
 			{
 				name: "Music", //- Status Text
-				type: "LISTENING", //- PLAYING, WATCHING, LISTENING, STREAMING
+				type: 2, //- PLAYING, WATCHING, LISTENING, STREAMING
 			},
 		],
 	},
-	iconURL: "https://cdn.darrennathanael.com/icons/spinning_disk.gif", //- This icon will be in every embed's author field
 };
