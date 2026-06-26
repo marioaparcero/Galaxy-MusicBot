@@ -1,5 +1,5 @@
 const SlashCommand = require("../../lib/SlashCommand");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js"); // Routes, 
 const escapeMarkdown = require("discord.js").Util.escapeMarkdown;
 
 const command = new SlashCommand()
@@ -113,6 +113,29 @@ const command = new SlashCommand()
       var title = escapeMarkdown(res.tracks[0].title);
       var title = title.replace(/\]/g, "");
       var title = title.replace(/\[/g, "");
+      
+      // Actualizar el estado del canal con el nombre de la canción
+      // try {
+      //  // await channel.setStatus(title);
+      //   await client.rest.put(
+      //     Routes.channelStatus(channel.id),
+      //     { body: { status: title } }
+      //   );
+
+        // // Sin Routes
+        // // await client.rest.patch(
+        // //   `/channels/${channel.id}`,
+        // //   { body: { status: title } }
+        // // );
+
+        // // Segunda forma
+        // //  await client.api.channels(channel.id).patch({
+        // //   data: { status: title }
+        // // });
+      // } catch (err) {
+      //   client.error(err);
+      // }
+
       let addQueueEmbed = new MessageEmbed()
         .setColor(client.config.embedColor)
         .setAuthor({ name: `Agregado a la cola`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) }) //client.config.iconURL
