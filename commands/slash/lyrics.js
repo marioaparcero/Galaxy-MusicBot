@@ -78,16 +78,16 @@ const command = new SlashCommand()
 		let query = args ? args : currentTitle;
 		let lyricsResults = [];
 
-		fetch(`https://api.lyrics.ovh/suggest/${encodeURIComponent(query)}`)
+		fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(query)}`)
 		.then(res => res.json())
-		.then(async (lyricsData) => {
-			const data = lyricsData.data || [];
+		.then(async (data) => {
+			if (!Array.isArray(data)) data = [];
 			if (data.length !== 0) {
 				for (let i = 0; i < client.config.lyricsMaxResults; i++) {
 					if (data[i]) {
 						lyricsResults.push({
-							label: `${data[i].title}`.substring(0, 100),
-							description: `${data[i].artist.name}`.substring(0, 100),
+							label: `${data[i].trackName}`.substring(0, 100),
+							description: `${data[i].artistName}`.substring(0, 100),
 							value: i.toString()
 						});
 					} else { break }
@@ -121,12 +121,9 @@ const command = new SlashCommand()
 					if (interaction.isStringSelectMenu()) {
 						await interaction.deferUpdate();
 						const song = data[parseInt(interaction.values[0])];
-						const url = song.link || `https://lyrics.ovh/`;
+						const url = `https://lrclib.net/`;
 
-						fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(song.artist.name)}/${encodeURIComponent(song.title)}`)
-						.then(res => res.json())
-						.then((lyricsRes) => {
-							let lyricsText = lyricsRes.lyrics;
+						let lyricsText = song.plainLyrics || "";
 
 							const button = new ActionRowBuilder()
 								.addComponents(
@@ -141,15 +138,15 @@ const command = new SlashCommand()
 										.setStyle(5),
 								);
 
-							const ovh_icon = 'https://i.imgur.com/8zRvwu4.png';
+							const lrclib_icon = 'https://i.imgur.com/uQWJ5aI.png';
 							let lyricsEmbed = new EmbedBuilder()
 								.setColor(client.config.embedColor)
-								.setTitle(`${song.title} - ${song.artist.name}`)
+								.setTitle(`${song.trackName} - ${song.artistName}`)
 								.setURL(url)
-								.setThumbnail(song.album ? song.album.cover_medium : client.config.iconURL)
+								.setThumbnail(client.config.iconURL)
 								.setFooter({
-									text: 'Letra proporcionada por lyrics.ovh',
-									iconURL: ovh_icon
+									text: 'Letra proporcionada por LRCLIB',
+									iconURL: lrclib_icon
 								})
 								.setDescription(lyricsText);
 
@@ -157,8 +154,8 @@ const command = new SlashCommand()
 								lyricsEmbed
 									.setDescription(`**Lamentablemente no pudimos obtener estas letras.**`)
 									.setFooter({
-										text: 'La letra no se encontró en lyrics.ovh.',
-										iconURL: ovh_icon
+										text: 'La letra no se encontró en LRCLIB.',
+										iconURL: lrclib_icon
 									})
 							}
 
@@ -172,11 +169,6 @@ const command = new SlashCommand()
 								embeds: [lyricsEmbed],
 								components: [button],
 							});
-
-						}).catch(err => {
-							console.error(err);
-							interaction.followUp({ content: "Error al obtener la letra de la canción.", flags: 64 });
-						});
 					}
 				});
 
