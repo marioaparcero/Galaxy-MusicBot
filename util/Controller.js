@@ -45,6 +45,11 @@ module.exports = async (client, interaction) => {
 		player.queue.clear();
 		player.stop();
 		player.set("autoQueue", false);
+		try {
+			await client.rest.put(`/channels/${player.options.voiceChannelId}/voice-status`, { body: { status: "" } });
+		} catch (err) {
+			// Ignorar si faltan permisos
+		}
 		client.warn(`Reproductor: ${ player.options.guildId } | El reproductor ha sido parado con éxito`); // ha sido detenido
 		const msg = await interaction.channel.send({
 			embeds: [

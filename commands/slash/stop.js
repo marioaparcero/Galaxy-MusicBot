@@ -41,6 +41,12 @@ const command = new SlashCommand()
 			});
 		}
 		
+		try {
+			await client.rest.put(`/channels/${player.options.voiceChannelId}/voice-status`, { body: { status: "" } });
+		} catch (err) {
+			// Ignorar si faltan permisos
+		}
+		
 		if (player.twentyFourSeven) {
 			player.queue.clear();
 			player.stop();
