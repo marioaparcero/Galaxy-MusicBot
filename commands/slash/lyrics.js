@@ -5,8 +5,8 @@ const {
 	ButtonBuilder,
 	EmbedBuilder
 } = require("discord.js");
-const { Rlyrics } = require("rlyrics");
-const lyricsApi = new Rlyrics();
+const Genius = require("genius-lyrics");
+const lyricsApi = new Genius.Client();
 
 const command = new SlashCommand()
 	.setName("lyrics")
@@ -79,13 +79,13 @@ const command = new SlashCommand()
 		let query = args ? args : currentTitle;
 		let lyricsResults = [];
 
-		lyricsApi.search(query).then(async (lyricsData) => {
+		lyricsApi.songs.search(query).then(async (lyricsData) => {
 			if (lyricsData.length !== 0) {
 				for (let i = 0; i < client.config.lyricsMaxResults; i++) {
 					if (lyricsData[i]) {
 						lyricsResults.push({
-							label: `${lyricsData[i].title}`,
-							description: `${lyricsData[i].artist}`,
+							label: `${lyricsData[i].title}`.substring(0, 100),
+							description: `${lyricsData[i].artist.name}`.substring(0, 100),
 							value: i.toString()
 						});
 					} else { break }
@@ -118,11 +118,10 @@ const command = new SlashCommand()
 				collector.on("collect", async (interaction) => {
 					if (interaction.isStringSelectMenu()) {
 						await interaction.deferUpdate();
-						const url = lyricsData[parseInt(interaction.values[0])].url;
+						const song = lyricsData[parseInt(interaction.values[0])];
+						const url = song.url;
 
-						lyricsApi.find(url).then((lyrics) => {
-							let lyricsText = lyrics.lyrics;
-
+						song.lyrics().then((lyricsText) => {
 							const button = new ActionRowBuilder()
 								.addComponents(
 									new ButtonBuilder()
@@ -136,24 +135,24 @@ const command = new SlashCommand()
 										.setStyle('LINK'),
 								);
 
-							const musixmatch_icon = 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Musixmatch_logo_icon_only.svg/480px-Musixmatch_logo_icon_only.svg.png';
+							const genius_icon = 'https://images.genius.com/f2552d4bfedda85f9ebff3004bb15c92.204x204x1.png';
 							let lyricsEmbed = new EmbedBuilder()
 								.setColor(client.config.embedColor)
-								.setTitle(`${lyrics.name}`)
+								.setTitle(`${song.title}`)
 								.setURL(url)
-								.setThumbnail(lyrics.icon)
+								.setThumbnail(song.thumbnail)
 								.setFooter({
-									text: 'Letra proporcionada por MusixMatch.',
-									iconURL: musixmatch_icon
+									text: 'Letra proporcionada por Genius.',
+									iconURL: genius_icon
 								})
 								.setDescription(lyricsText);
 
-							if (lyricsText.length === 0) {
+							if (!lyricsText || lyricsText.length === 0) {
 								lyricsEmbed
-									.setDescription(`**Lamentablemente no estamos autorizados a mostrar estas letras.**`)
+									.setDescription(`**Lamentablemente no pudimos obtener estas letras.**`)
 									.setFooter({
-										text: 'La letra está restringida por MusixMatch.',
-										iconURL: musixmatch_icon
+										text: 'La letra no se encontró en Genius.',
+										iconURL: genius_icon
 									})
 							}
 
