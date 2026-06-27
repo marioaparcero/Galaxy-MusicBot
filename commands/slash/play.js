@@ -117,26 +117,31 @@ const command = new SlashCommand()
       var title = title.replace(/\[/g, "");
       
       // Actualizar el estado del canal con el nombre de la canción
-      // try {
-      //  // await channel.setStatus(title);
-      //   await client.rest.put(
-      //     Routes.channelStatus(channel.id),
-      //     { body: { status: title } }
-      //   );
+      try {
+       // await channel.setStatus(title);
+        // await client.rest.put(
+        //   Routes.channelStatus(channel.id),
+        //   { body: { status: title } }
+        // );
 
-        // // Sin Routes
-        // // await client.rest.patch(
-        // //   `/channels/${channel.id}`,
-        // //   { body: { status: title } }
-        // // );
+        // Sin Routes
+        // await client.rest.patch(
+        //   `/channels/${channel.id}`,
+        //   { body: { status: title } }
+        // );
 
-        // // Segunda forma
-        // //  await client.api.channels(channel.id).patch({
-        // //   data: { status: title }
-        // // });
-      // } catch (err) {
-      //   client.error(err);
-      // }
+        await client.rest.put(
+          `/channels/${channel.id}/voice-status`,
+          { body: { status: title } }
+        );
+
+        // Segunda forma
+        //  await client.api.channels(channel.id).patch({
+        //   data: { status: title }
+        // });
+      } catch (err) {
+        client.error(err);
+      }
 
       let addQueueEmbed = new EmbedBuilder()
         .setColor(client.config.embedColor)
