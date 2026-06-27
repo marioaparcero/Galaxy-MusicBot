@@ -50,7 +50,6 @@
     "express-rate-limit": "^6.2.0",
     "express-session": "^1.17.3",
     "express-ws": "^5.0.2",
-    "genius-lyrics": "^4.4.7",
     "js-yaml": "^4.1.0",
     "jsoning": "^0.13.0",
     "lodash": "^4.17.21",

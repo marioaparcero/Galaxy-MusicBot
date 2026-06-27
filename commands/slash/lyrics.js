@@ -5,8 +5,7 @@ const {
 	ButtonBuilder,
 	EmbedBuilder
 } = require("discord.js");
-const Genius = require("genius-lyrics");
-const lyricsApi = new Genius.Client();
+const fetch = require("node-fetch");
 
 const command = new SlashCommand()
 	.setName("lyrics")
@@ -79,13 +78,16 @@ const command = new SlashCommand()
 		let query = args ? args : currentTitle;
 		let lyricsResults = [];
 
-		lyricsApi.songs.search(query).then(async (lyricsData) => {
-			if (lyricsData.length !== 0) {
+		fetch(`https://api.lyrics.ovh/suggest/${encodeURIComponent(query)}`)
+		.then(res => res.json())
+		.then(async (lyricsData) => {
+			const data = lyricsData.data || [];
+			if (data.length !== 0) {
 				for (let i = 0; i < client.config.lyricsMaxResults; i++) {
-					if (lyricsData[i]) {
+					if (data[i]) {
 						lyricsResults.push({
-							label: `${lyricsData[i].title}`.substring(0, 100),
-							description: `${lyricsData[i].artist.name}`.substring(0, 100),
+							label: `${data[i].title}`.substring(0, 100),
+							description: `${data[i].artist.name}`.substring(0, 100),
 							value: i.toString()
 						});
 					} else { break }
@@ -118,10 +120,14 @@ const command = new SlashCommand()
 				collector.on("collect", async (interaction) => {
 					if (interaction.isStringSelectMenu()) {
 						await interaction.deferUpdate();
-						const song = lyricsData[parseInt(interaction.values[0])];
-						const url = song.url;
+						const song = data[parseInt(interaction.values[0])];
+						const url = song.link || `https://lyrics.ovh/`;
 
-						song.lyrics().then((lyricsText) => {
+						fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(song.artist.name)}/${encodeURIComponent(song.title)}`)
+						.then(res => res.json())
+						.then((lyricsRes) => {
+							let lyricsText = lyricsRes.lyrics;
+
 							const button = new ActionRowBuilder()
 								.addComponents(
 									new ButtonBuilder()
@@ -135,15 +141,15 @@ const command = new SlashCommand()
 										.setStyle('LINK'),
 								);
 
-							const genius_icon = 'https://images.genius.com/f2552d4bfedda85f9ebff3004bb15c92.204x204x1.png';
+							const ovh_icon = 'https://i.imgur.com/8zRvwu4.png';
 							let lyricsEmbed = new EmbedBuilder()
 								.setColor(client.config.embedColor)
-								.setTitle(`${song.title}`)
+								.setTitle(`${song.title} - ${song.artist.name}`)
 								.setURL(url)
-								.setThumbnail(song.thumbnail)
+								.setThumbnail(song.album ? song.album.cover_medium : client.config.iconURL)
 								.setFooter({
-									text: 'Letra proporcionada por Genius.',
-									iconURL: genius_icon
+									text: 'Letra proporcionada por lyrics.ovh',
+									iconURL: ovh_icon
 								})
 								.setDescription(lyricsText);
 
@@ -151,8 +157,8 @@ const command = new SlashCommand()
 								lyricsEmbed
 									.setDescription(`**Lamentablemente no pudimos obtener estas letras.**`)
 									.setFooter({
-										text: 'La letra no se encontró en Genius.',
-										iconURL: genius_icon
+										text: 'La letra no se encontró en lyrics.ovh.',
+										iconURL: ovh_icon
 									})
 							}
 
@@ -167,7 +173,10 @@ const command = new SlashCommand()
 								components: [button],
 							});
 
-						})
+						}).catch(err => {
+							console.error(err);
+							interaction.followUp({ content: "Error al obtener la letra de la canción.", flags: 64 });
+						});
 					}
 				});
 
