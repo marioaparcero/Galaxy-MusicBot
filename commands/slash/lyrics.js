@@ -78,7 +78,9 @@ const command = new SlashCommand()
 		let query = args ? args : currentTitle;
 		let lyricsResults = [];
 
-		fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(query)}`)
+		fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(query)}`, {
+			headers: { "User-Agent": "GalaxyMusicBot/1.0.0 (https://github.com/SudhanPlayz/Discord-MusicBot)" }
+		})
 		.then(res => res.json())
 		.then(async (data) => {
 			if (!Array.isArray(data)) data = [];
