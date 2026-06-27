@@ -134,11 +134,11 @@ const command = new SlashCommand()
 										.setCustomId('tipsbutton')
 										.setLabel('Consejos')
 										.setEmoji(`📌`)
-										.setStyle('SECONDARY'),
+										.setStyle(2),
 									new ButtonBuilder()
 										.setLabel('Fuente')
 										.setURL(url)
-										.setStyle('LINK'),
+										.setStyle(5),
 								);
 
 							const ovh_icon = 'https://i.imgur.com/8zRvwu4.png';
@@ -202,7 +202,7 @@ const command = new SlashCommand()
 							.setEmoji(`📌`)
 							.setCustomId('tipsbutton')
 							.setLabel('Tips')
-							.setStyle('SECONDARY'),
+							.setStyle(2),
 					);
 				return interaction.editReply({
 					embeds: [
