@@ -4,6 +4,7 @@ const profiles = {
 		clientId: process.env.LUCIO_CLIENT_ID || "",
 		clientSecret: process.env.LUCIO_CLIENT_SECRET || "",
 		iconURL: "https://comunidadoverwatch.com/wp-content/uploads/2023/09/lucio-disco1.gif",
+		voiceStatusEmoji: "<:playblue:1520236100033970196>",
 		port: 4200,
 	},
 	dva: {
@@ -11,6 +12,7 @@ const profiles = {
 		clientId: process.env.DVA_CLIENT_ID || "",
 		clientSecret: process.env.DVA_CLIENT_SECRET || "",
 		iconURL: "https://comunidadoverwatch.com/wp-content/uploads/2023/09/dva7.gif",
+		voiceStatusEmoji: "<:playblue:1520236305882284235>",
 		port: 4201,
 	},
 	jetpackcat: {
@@ -18,6 +20,7 @@ const profiles = {
 		clientId: process.env.JETPACKCAT_CLIENT_ID || "",
 		clientSecret: process.env.JETPACKCAT_CLIENT_SECRET || "",
 		iconURL: "https://comunidadoverwatch.com/wp-content/uploads/2023/09/jetpackcat.gif",
+		voiceStatusEmoji: "<:playblue:1520236437050495086>",
 		port: 4202,
 	}
 };
@@ -38,6 +41,7 @@ module.exports = {
 	clientId: activeProfile.clientId,
 	clientSecret: activeProfile.clientSecret,
 	iconURL: activeProfile.iconURL,
+	voiceStatusEmoji: activeProfile.voiceStatusEmoji,
 	port: activeProfile.port,
 
 	// ===============================
