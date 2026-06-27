@@ -108,7 +108,7 @@ const command = new SlashCommand()
     });
     const collector = tempMsg.createMessageComponentCollector({
       time: 600000,
-      componentType: "BUTTON",
+      componentType: 2,
     });
 
     collector.on("collect", async (iter) => {
