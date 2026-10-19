@@ -26,7 +26,7 @@ if (process.env.REPL_ID) {
 
 const client = new DiscordMusicBot();
 
-console.log("Asegúrese de completar config.js antes de iniciar el bot.");
+// console.log("Asegúrese de completar config.js antes de iniciar el bot.");
 
 const getClient = () => client;
 
