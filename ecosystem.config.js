@@ -3,10 +3,7 @@ module.exports = {
     name: "Lucio",
     script: 'index.js',
     watch: false,
-    env: {
-      TOKENLUCIO: "",
-      TOKEN_DVA: "VALOR_OTRA_VARIABLE"
-    },
+    env_file: '.env'
     // watch: '.'
   }, //{
     // script: './service-worker/',
