@@ -1,0 +1,6 @@
+# Archivos de configuración y credenciales sensibles
+config.json
+.env
+.env.*
+*.log
+node_modules/
