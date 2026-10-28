@@ -63,6 +63,14 @@ const command = new SlashCommand()
 				return interaction.editReply({ embeds: [thing] });
 			}
 			
+			if (position === 1) {
+				player.stop();
+				let thing = new EmbedBuilder()
+					.setColor(client.config.embedColor)
+					.setDescription("✅ | Posición saltada " + position);
+				return interaction.editReply({ embeds: [thing] });
+			}
+			
 			player.queue.remove(0, position - 1);
 			player.stop();
 			
