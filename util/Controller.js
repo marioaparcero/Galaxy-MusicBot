@@ -200,6 +200,10 @@ module.exports = async (client, interaction) => {
 			var title = escapeMarkdown(song.title)
 			var title = title.replace(/\]/g,"")
 			var title = title.replace(/\[/g,"")
+			const queueFields = queue.slice(0, 24).map((track, index) => ({
+				name: "\n",
+				value: `\`${index + 1}\`. [${ track.title }](${ song.uri }) [${ track.requester }]\n Duración: ${track.isStream ? "LIVE" : (Number.isFinite(Number(track.duration)) ? pms(Number(track.duration), { colonNotation: true }) : "Desconocida")}`,
+			}));
 			const queueEmbed = new EmbedBuilder()
 				.setColor(client.config.embedColor)
 				.setTitle("♪ Cola de Reproducción")
@@ -208,19 +212,20 @@ module.exports = async (client, interaction) => {
 				// )
 				.setDescription(`A continuación se muestra la cola de reproducción:\n\n**Canciones en cola (${(player.queue.length + (player.queue.current ? 1 : 0)) - 1})**\n`) //Pistas en cola - Canciones en espera //ㅤㅤㅤㅤㅤPara saltar: </saltar:1156301243359187028>
 				.addFields(
-					queue.map((track, index) => ({
-						name: `\n`,
-						//name: `\`${index + 1}\`. [${ track.title }](${ song.uri })`,
-						//name: `${index + 1}. ${track.title}`,
-						value: `\`${index + 1}\`. [${ track.title }](${ song.uri }) [${ track.requester }]\n Duración: ${track.isStream ? "LIVE" : pms(track.duration, { colonNotation: true })}`,
-					})),
+					...queueFields,
+					// queue.map((track, index) => ({
+					// 	name: `\n`,
+					// 	//name: `\`${index + 1}\`. [${ track.title }](${ song.uri })`,
+					// 	//name: `${index + 1}. ${track.title}`,
+					// 	value: `\`${index + 1}\`. [${ track.title }](${ song.uri }) [${ track.requester }]\n Duración: ${track.isStream ? "LIVE" : pms(track.duration, { colonNotation: true })}`,
+					// })),
 					// {
 					// 	name: "Para saltar:",
-					// 	value: `</saltar:1156301243359187028>\n\n**${(player.queue.length + (player.queue.current ? 1 : 0)) - 1} canciones en espera**\nNo hay canciones en espera. ¡Agrega una!`
+					// 	value: `</saltar:1157351918096621679>\n\n**${(player.queue.length + (player.queue.current ? 1 : 0)) - 1} canciones en espera**\nNo hay canciones en espera. ¡Agrega una!`
 					// }
 					{
 						name: " ",
-						value: `Para saltar a una canción: </saltar:1156301243359187028>\n\n`
+						value: `Para saltar a una canción: </saltar:1157351918096621679>\n\n`
 					}
 					// {
 					// 	name: `**${(player.queue.length + (player.queue.current ? 1 : 0)) - 1} canciones en espera**`,
