@@ -127,11 +127,9 @@ async function searchWithFallback(player, query, user) {
   const terms = [query];
   const normalizedQuery = query.trim().replace(/\s+/g, " ");
 
-  if (normalizedQuery.length <= 5) {
-    ["song", "music", "official", "video"].forEach((keyword) => {
-      terms.push(`${normalizedQuery} ${keyword}`);
-    });
-  }
+  ["song", "music", "official", "video", "lyrics"].forEach((keyword) => {
+    terms.push(`${normalizedQuery} ${keyword}`);
+  });
 
   let lastResult = null;
   for (const term of terms) {
@@ -153,22 +151,18 @@ async function searchWithFallback(player, query, user) {
     return playlistFallback;
   }
 
-  if (normalizedQuery.length <= 5) {
-    for (const term of terms) {
-      if (!term || !term.trim()) continue;
+  for (const term of new Set(terms.filter(Boolean))) {
+    try {
+      const ytResults = await yt.search(term, { safeSearch: false, limit: 5 });
+      const firstUrl = ytResults?.find((item) => item?.url)?.url;
+      if (!firstUrl) continue;
 
-      try {
-        const ytResults = await yt.search(term, { safeSearch: false, limit: 5 });
-        const firstUrl = ytResults?.[0]?.url;
-        if (firstUrl) {
-          const fallbackRes = await player.search(firstUrl, user).catch(() => ({ loadType: "empty" }));
-          if (fallbackRes.loadType !== "empty" && fallbackRes.tracks && fallbackRes.tracks.length > 0) {
-            return fallbackRes;
-          }
-        }
-      } catch (_) {
-        // Ignorar errores del fallback de YouTube y continuar con la siguiente búsqueda.
+      const fallbackRes = await player.search(firstUrl, user).catch(() => ({ loadType: "empty" }));
+      if (fallbackRes.loadType !== "empty" && fallbackRes.tracks && fallbackRes.tracks.length > 0) {
+        return fallbackRes;
       }
+    } catch (_) {
+      // Ignorar errores del fallback de YouTube y continuar con la siguiente búsqueda.
     }
   }
 

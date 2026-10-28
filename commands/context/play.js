@@ -134,7 +134,31 @@ async function searchWithFallback(player, query, user) {
     return searchPlaylistFallback(player, playlistUrl, user);
   }
 
-  return player.search(query, user).catch(() => ({ loadType: "error" }));
+  const firstRes = await player.search(query, user).catch(() => ({ loadType: "empty" }));
+  if (firstRes && firstRes.loadType !== "empty" && firstRes.tracks && firstRes.tracks.length > 0) {
+    return firstRes;
+  }
+
+  const normalized = (query ?? "").trim().replace(/\s+/g, " ");
+  if (!normalized) return { loadType: "empty" };
+
+  const variants = new Set([normalized, `${normalized} song`, `${normalized} music`, `${normalized} official`, `${normalized} video`]);
+  for (const term of variants) {
+    try {
+      const ytResults = await yt.search(term, { safeSearch: false, limit: 5 });
+      const firstUrl = ytResults?.find((item) => item?.url)?.url;
+      if (!firstUrl) continue;
+
+      const fallbackRes = await player.search(firstUrl, user).catch(() => ({ loadType: "empty" }));
+      if (fallbackRes.loadType !== "empty" && fallbackRes.tracks && fallbackRes.tracks.length > 0) {
+        return fallbackRes;
+      }
+    } catch (_) {
+      // Ignorar errores del fallback de YouTube y continuar con la siguiente búsqueda.
+    }
+  }
+
+  return firstRes;
 }
 
 module.exports = {
