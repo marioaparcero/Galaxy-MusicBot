@@ -1,6 +1,51 @@
 const SlashCommand = require("../../lib/SlashCommand");
 const { EmbedBuilder } = require("discord.js"); // Routes, 
 const escapeMarkdown = require("discord.js").escapeMarkdown;
+const yt = require("youtube-sr").default;
+
+async function searchWithFallback(player, query, user) {
+  const terms = [query];
+  const normalizedQuery = query.trim().replace(/\s+/g, " ");
+
+  if (normalizedQuery.length <= 5) {
+    ["song", "music", "official", "video"].forEach((keyword) => {
+      terms.push(`${normalizedQuery} ${keyword}`);
+    });
+  }
+
+  let lastResult = null;
+  for (const term of terms) {
+    if (!term || !term.trim()) continue;
+
+    const res = await player.search(term, user).catch(() => ({ loadType: "empty" }));
+    lastResult = res;
+
+    if (res.loadType !== "empty" && res.tracks && res.tracks.length > 0) {
+      return res;
+    }
+  }
+
+  if (normalizedQuery.length <= 5) {
+    for (const term of terms) {
+      if (!term || !term.trim()) continue;
+
+      try {
+        const ytResults = await yt.search(term, { safeSearch: false, limit: 5 });
+        const firstUrl = ytResults?.[0]?.url;
+        if (firstUrl) {
+          const fallbackRes = await player.search(firstUrl, user).catch(() => ({ loadType: "empty" }));
+          if (fallbackRes.loadType !== "empty" && fallbackRes.tracks && fallbackRes.tracks.length > 0) {
+            return fallbackRes;
+          }
+        }
+      } catch (_) {
+        // Ignorar errores del fallback de YouTube y continuar con la siguiente búsqueda.
+      }
+    }
+  }
+
+  return lastResult || { loadType: "empty" };
+}
 
 const command = new SlashCommand()
   .setName("play")
@@ -67,7 +112,7 @@ const command = new SlashCommand()
     });
 
     let query = options.getString("query", true);
-    let res = await player.search(query, interaction.user).catch((err) => { //`:musical_note: ${query}`
+    let res = await searchWithFallback(player, query, interaction.user).catch((err) => { //`:musical_note: ${query}`
       client.error(err);
       return {
         loadType: "error",

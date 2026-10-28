@@ -1,6 +1,58 @@
 const Controller = require("../util/Controller");
 const yt = require("youtube-sr").default;
 
+async function getAutocompleteChoices(query) {
+    const rawQuery = (query ?? "").trim();
+    if (!rawQuery) return [];
+
+    const directUrl = [
+        /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
+        /^(?:spotify:|https:\/\/[a-z]+\.spotify\.com\/(track\/|user\/(.*)\/playlist\/|playlist\/))(.*)$/,
+        /^https?:\/\/(?:www\.)?deezer\.com\/[a-z]+\/(track|album|playlist)\/(\d+)$/,
+        /^(?:(https?):\/\/)?(?:(?:www|m)\.)?(soundcloud\.com|snd\.sc)\/(.*)$/,
+        /(?:https:\/\/music\.apple\.com\/)(?:.+)?(artist|album|music-video|playlist)\/([\w\-\.]+(\/)+[\w\-\.]+|[^&]+)\/([\w\-\.]+(\/)+[\w\-\.]+|[^&]+)/
+    ].some((regex) => regex.test(rawQuery));
+
+    if (directUrl) {
+        return [{ name: rawQuery, value: rawQuery }];
+    }
+
+    const fallbackQueries = new Set([rawQuery]);
+    const normalized = rawQuery.replace(/\s+/g, " ").trim();
+    const shortKeywords = ["song", "music", "video", "official", "lyrics"];
+
+    if (normalized.length <= 5) {
+        shortKeywords.forEach((keyword) => fallbackQueries.add(`${normalized} ${keyword}`));
+    }
+
+    const choices = [];
+    const seenValues = new Set();
+
+    for (const searchQuery of fallbackQueries) {
+        let results = [];
+        try {
+            results = await yt.search(searchQuery, { safeSearch: false, limit: 12 });
+        } catch (_) {
+            continue;
+        }
+
+        for (const item of results || []) {
+            if (!item || !item.title || !item.url) continue;
+            if (seenValues.has(item.url)) continue;
+
+            const name = item.title.length > 100 ? `${item.title.slice(0, 97)}...` : item.title;
+            choices.push({ name, value: item.url });
+            seenValues.add(item.url);
+
+            if (choices.length >= 10) break;
+        }
+
+        if (choices.length >= 10) break;
+    }
+
+    return choices;
+}
+
 /**
  *
  * @param {import("../lib/DiscordMusicBot")} client
@@ -42,35 +94,11 @@ module.exports = async (client, interaction) => {
     }
 
     if (interaction.isAutocomplete()) {
-        const url = interaction.options.getString("query")
-        if (url === "") return;
-
-        const match = [
-            /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/,
-            /^(?:spotify:|https:\/\/[a-z]+\.spotify\.com\/(track\/|user\/(.*)\/playlist\/|playlist\/))(.*)$/,
-            /^https?:\/\/(?:www\.)?deezer\.com\/[a-z]+\/(track|album|playlist)\/(\d+)$/,
-            /^(?:(https?):\/\/)?(?:(?:www|m)\.)?(soundcloud\.com|snd\.sc)\/(.*)$/,
-            /(?:https:\/\/music\.apple\.com\/)(?:.+)?(artist|album|music-video|playlist)\/([\w\-\.]+(\/)+[\w\-\.]+|[^&]+)\/([\w\-\.]+(\/)+[\w\-\.]+|[^&]+)/
-        ].some(function (match) {
-            return match.test(url) == true;
-        });
-
-        async function checkRegex() {
-            if (match == true) {
-                let choice = []
-                choice.push({ name: url, value: url })
-                await interaction.respond(choice).catch(() => { });
-            }
-        }
-
-        const Random = "ytsearch"[Math.floor(Math.random() * "ytsearch".length)];
+        const url = interaction.options.getString("query") ?? "";
+        if (!url.trim()) return;
 
         if (interaction.commandName == "play") {
-            checkRegex()
-            let choice = []
-            await yt.search(url || Random, { safeSearch: false, limit: 25 }).then(result => {
-                result.forEach(x => { choice.push({ name: x.title, value: x.url }) })
-            }).catch(e => { /* Ignorar errores de autocompletado de youtube-sr */ });
+            const choice = await getAutocompleteChoices(url);
             return await interaction.respond(choice).catch(() => { });
         }
     }
