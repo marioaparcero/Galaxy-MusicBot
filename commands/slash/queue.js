@@ -66,6 +66,10 @@ const command = new SlashCommand()
             var title = escapeMarkdown(song.title)
             var title = title.replace(/\]/g,"")
             var title = title.replace(/\[/g,"")
+			const safeDuration = (value) => {
+				const n = Number(value);
+				return Number.isFinite(n) && n >= 0 ? pms(n, { colonNotation: true }) : "Desconocida";
+			};
 			const queueEmbed = new EmbedBuilder()
 				.setColor(client.config.embedColor)
 				.setDescription(`**♪ | Reproduciendo ahora:** [${ title }](${ song.uri })`)
@@ -74,10 +78,7 @@ const command = new SlashCommand()
 						name: "Duración",
 						value: song.isStream
 							? `\`LIVE\``
-							: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
-								player.queue.current.duration,
-								{ colonNotation: true },
-							) }\``,
+							: `\`${ safeDuration(player.position) } / ${ safeDuration(player.queue.current.duration) }\``,
 						inline: true,
 					},
 					{
@@ -107,6 +108,10 @@ const command = new SlashCommand()
 				}
 			}
 			
+			const safeDuration = (value) => {
+				const n = Number(value);
+				return Number.isFinite(n) && n >= 0 ? pms(n, { colonNotation: true }) : "Desconocida";
+			};
 			const mapping = player.queue.map(
 				(t, i) => `\` ${ ++i } \` [${ t.title }](${ t.uri }) [${ t.requester }]`,
 			);
@@ -142,17 +147,12 @@ const command = new SlashCommand()
 							name: "Duración de la pista",
 							value: song.isStream
 								? `\`LIVE\``
-								: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
-									player.queue.current.duration,
-									{ colonNotation: true },
-								) }\``,
+								: `\`${ safeDuration(player.position) } / ${ safeDuration(player.queue.current.duration) }\``,
 							inline: true,
 						},
 						{
 							name: "Duración de la lista", //Duración total de las pistas
-							value: `\`${ pms(queueDuration, {
-								colonNotation: true,
-							}) }\``,
+							value: `\`${ safeDuration(queueDuration) }\``,
 							inline: true,
 						},
 						{
@@ -187,17 +187,12 @@ const command = new SlashCommand()
 							name: "Duración de la pista",
 							value: song.isStream
 								? `\`LIVE\``
-								: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
-									player.queue.current.duration,
-									{ colonNotation: true },
-								) }\``,
+								: `\`${ safeDuration(player.position) } / ${ safeDuration(player.queue.current.duration) }\``,
 							inline: true,
 						},
 						{
 							name: "Duración total de las pistas",
-							value: `\`${ pms(queueDuration, {
-								colonNotation: true,
-							}) }\``,
+							value: `\`${ safeDuration(queueDuration) }\``,
 							inline: true,
 						},
 						{
@@ -267,17 +262,12 @@ const command = new SlashCommand()
 									name: "Duración de la pista",
 									value: song.isStream
 										? `\`LIVE\``
-										: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
-											player.queue.current.duration,
-											{ colonNotation: true },
-										) }\``,
+										: `\`${ safeDuration(player.position) } / ${ safeDuration(player.queue.current.duration) }\``,
 									inline: true,
 								},
 								{
 									name: "Duración total de las pistas",
-									value: `\`${ pms(queueDuration, {
-										colonNotation: true,
-									}) }\``,
+									value: `\`${ safeDuration(queueDuration) }\``,
 									inline: true,
 								},
 								{
@@ -315,17 +305,12 @@ const command = new SlashCommand()
 									name: "Duración de la pista",
 									value: song.isStream
 										? `\`LIVE\``
-										: `\`${ pms(player.position, { colonNotation: true }) } / ${ pms(
-											player.queue.current.duration,
-											{ colonNotation: true },
-										) }\``,
+										: `\`${ safeDuration(player.position) } / ${ safeDuration(player.queue.current.duration) }\``,
 									inline: true,
 								},
 								{
 									name: "Duración total de las pistas",
-									value: `\`${ pms(queueDuration, {
-										colonNotation: true,
-									}) }\``,
+									value: `\`${ safeDuration(queueDuration) }\``,
 									inline: true,
 								},
 								{
