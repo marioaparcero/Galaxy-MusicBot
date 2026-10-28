@@ -3,6 +3,126 @@ const { EmbedBuilder } = require("discord.js"); // Routes,
 const escapeMarkdown = require("discord.js").escapeMarkdown;
 const yt = require("youtube-sr").default;
 
+function normalizeYoutubeQuery(query) {
+  const trimmed = (query ?? "").trim();
+  if (!trimmed) return trimmed;
+
+  try {
+    const parsed = new URL(trimmed);
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+    const isYouTubeHost = ["youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be", "youtube-nocookie.com"].includes(hostname);
+
+    if (!isYouTubeHost) return trimmed;
+
+    const listId = parsed.searchParams.get("list");
+    const videoId = parsed.searchParams.get("v");
+
+    if (videoId && (parsed.pathname === "/watch" || listId)) {
+      const sanitized = new URL("https://www.youtube.com/watch");
+      sanitized.searchParams.set("v", videoId);
+      if (listId) {
+        sanitized.searchParams.set("list", listId);
+      }
+      return sanitized.toString();
+    }
+
+    if (listId && (parsed.pathname === "/playlist" || parsed.pathname.startsWith("/playlist/"))) {
+      return `https://www.youtube.com/playlist?list=${listId}`;
+    }
+
+    if (hostname === "youtu.be") {
+      const shortVideoId = parsed.pathname.replace(/^\/+/, "");
+      if (shortVideoId) return `https://www.youtube.com/watch?v=${shortVideoId}`;
+    }
+  } catch (_) {
+    // Ignorar URLs no válidas y mantener la consulta original.
+  }
+
+  return trimmed;
+}
+
+function isYouTubePlaylistUrl(query) {
+  const trimmed = (query ?? "").trim();
+  if (!trimmed) return false;
+
+  try {
+    const parsed = new URL(trimmed);
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+    if (!["youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be", "youtube-nocookie.com"].includes(hostname)) {
+      return false;
+    }
+
+    const listId = parsed.searchParams.get("list");
+    return Boolean(listId || parsed.pathname === "/playlist" || parsed.pathname.startsWith("/playlist/"));
+  } catch (_) {
+    return false;
+  }
+}
+
+async function extractPlaylistVideoIds(playlistUrl) {
+  try {
+    const res = await fetch(playlistUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+        "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+      },
+    });
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const html = await res.text();
+    const matches = [
+      ...html.matchAll(/"videoId":"([A-Za-z0-9_-]{11})"/g),
+      ...html.matchAll(/(?:\/watch\?v=|\/vi\/)([A-Za-z0-9_-]{11})/g),
+    ];
+
+    const unique = [...new Set(matches.map((match) => match[1]).filter(Boolean))];
+    return unique.slice(0, 50);
+  } catch (_) {
+    return [];
+  }
+}
+
+async function searchPlaylistFallback(player, query, user) {
+  const playlistUrl = normalizeYoutubeQuery(query);
+  if (!isYouTubePlaylistUrl(playlistUrl)) {
+    return { loadType: "empty" };
+  }
+
+  try {
+    const videoIds = await extractPlaylistVideoIds(playlistUrl);
+    if (!videoIds.length) {
+      return { loadType: "empty" };
+    }
+
+    const tracks = [];
+    for (const videoId of videoIds) {
+      const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+      const res = await player.search(videoUrl, user).catch(() => null);
+      if (res && res.tracks && res.tracks.length > 0) {
+        tracks.push(...res.tracks);
+      }
+    }
+
+    if (!tracks.length) {
+      return { loadType: "empty" };
+    }
+
+    return {
+      loadType: "playlist",
+      playlist: {
+        name: "YouTube Playlist",
+        duration: tracks.reduce((sum, track) => sum + (track.duration || 0), 0),
+      },
+      tracks,
+    };
+  } catch (_) {
+    return { loadType: "error" };
+  }
+}
+
 async function searchWithFallback(player, query, user) {
   const terms = [query];
   const normalizedQuery = query.trim().replace(/\s+/g, " ");
@@ -23,6 +143,14 @@ async function searchWithFallback(player, query, user) {
     if (res.loadType !== "empty" && res.tracks && res.tracks.length > 0) {
       return res;
     }
+  }
+
+  if (isYouTubePlaylistUrl(normalizedQuery)) {
+    const playlistFallback = await searchPlaylistFallback(player, normalizedQuery, user);
+    if (playlistFallback.loadType === "playlist" || playlistFallback.loadType === "track") {
+      return playlistFallback;
+    }
+    return playlistFallback;
   }
 
   if (normalizedQuery.length <= 5) {
@@ -111,7 +239,7 @@ const command = new SlashCommand()
       withResponse: true,
     });
 
-    let query = options.getString("query", true);
+    let query = normalizeYoutubeQuery(options.getString("query", true));
     let res = await searchWithFallback(player, query, interaction.user).catch((err) => { //`:musical_note: ${query}`
       client.error(err);
       return {

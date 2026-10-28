@@ -1,8 +1,46 @@
 const Controller = require("../util/Controller");
 const yt = require("youtube-sr").default;
 
+function normalizeYoutubeQuery(query) {
+    const trimmed = (query ?? "").trim();
+    if (!trimmed) return trimmed;
+
+    try {
+        const parsed = new URL(trimmed);
+        const hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+        const isYouTubeHost = ["youtube.com", "m.youtube.com", "music.youtube.com", "youtu.be", "youtube-nocookie.com"].includes(hostname);
+
+        if (!isYouTubeHost) return trimmed;
+
+        const listId = parsed.searchParams.get("list");
+        const videoId = parsed.searchParams.get("v");
+
+        if (videoId && (parsed.pathname === "/watch" || listId)) {
+            const sanitized = new URL("https://www.youtube.com/watch");
+            sanitized.searchParams.set("v", videoId);
+            if (listId) {
+                sanitized.searchParams.set("list", listId);
+            }
+            return sanitized.toString();
+        }
+
+        if (listId && (parsed.pathname === "/playlist" || parsed.pathname.startsWith("/playlist/"))) {
+            return `https://www.youtube.com/playlist?list=${listId}`;
+        }
+
+        if (hostname === "youtu.be") {
+            const shortVideoId = parsed.pathname.replace(/^\/+/, "");
+            if (shortVideoId) return `https://www.youtube.com/watch?v=${shortVideoId}`;
+        }
+    } catch (_) {
+        // Ignorar URLs no válidas y mantener la consulta original.
+    }
+
+    return trimmed;
+}
+
 async function getAutocompleteChoices(query) {
-    const rawQuery = (query ?? "").trim();
+    const rawQuery = normalizeYoutubeQuery(query ?? "");
     if (!rawQuery) return [];
 
     const directUrl = [
