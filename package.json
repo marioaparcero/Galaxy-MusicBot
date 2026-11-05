@@ -72,7 +72,7 @@
     "rlyrics": "^2.0.1",
     "systeminformation": "^5.9.12",
     "winston": "^3.3.3",
-    "youtube-sr": "^4.3.4"
+    "youtube-sr": "^4.3.12"
   },
   "devDependencies": {
     "prettier": "2.6.2"
